@@ -43,7 +43,7 @@ public class TestSQLUserDAO {
 		assertNull (userActual);
 	}
 
-	/*@Test
+	@Test
 	public void testRegistration() throws DAOException {
 		NewUser newUser = new NewUser ();
 		newUser.setName ("petya");
@@ -56,7 +56,7 @@ public class TestSQLUserDAO {
 		User actual = userDAO.registration(newUser);
 		assertEquals (newUser.getName(), actual.getName());
 	}
-	*/
+	
 	
 	@Test
 	public void testChangeRole() throws DAOException {
@@ -77,29 +77,46 @@ public class TestSQLUserDAO {
 		boolean actual = userDAO.checkLogin("1");
 		assertTrue (actual);
 	}
-
+	
 	@Test
-	public void testShowUserById() {
-		fail("Not yet implemented");
+	public void testCheckLoginNotExist() throws DAOException {
+		boolean actual = userDAO.checkLogin("45");
+		assertFalse (actual);
 	}
 
 	@Test
-	public void testAddDetails() {
-		fail("Not yet implemented");
+	public void testShowUserById() throws DAOException {
+		User actual = userDAO.showUserById(1);
+		assertEquals ("petya", actual.getName());
+	}
+	
+	@Test
+	public void testShowUserByIdNoSuch() throws DAOException {
+		User actual = userDAO.showUserById(0);
+		assertNull (actual);
+	}
+
+	@Test (expected = DAOException.class)
+	public void testAddDetailsFail () throws DAOException {
+		String passport = "AA3632211";
+		String driverLicense = "0AA122556";
+		int idUser = 0;
+		userDAO.addDetails(passport, driverLicense, idUser);
+	}
+
+
+	@Test (expected = DAOException.class)
+	public void testUpdateUserFail() throws DAOException {
+		User user = new User ();
+		user.setName("david");
+		userDAO.updateUser(user);
 	}
 
 	@Test
-	public void testAddUserStatus() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testUpdateUser() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testChangeStatus() {
-		fail("Not yet implemented");
+	public void testChangeStatus() throws DAOException {
+		String status = "block";
+		userDAO.changeStatus(31, status);
+		User actual = userDAO.showUserById(31);
+		assertEquals (status, actual.getStatus());
 	}
 }
