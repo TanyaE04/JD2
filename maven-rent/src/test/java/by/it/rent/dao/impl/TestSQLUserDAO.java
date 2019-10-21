@@ -87,7 +87,7 @@ public class TestSQLUserDAO {
 	@Test
 	public void testShowUserById() throws DAOException {
 		User actual = userDAO.showUserById(1);
-		assertEquals ("petya", actual.getName());
+		assertEquals ("ivan", actual.getName());
 	}
 	
 	@Test
@@ -108,15 +108,20 @@ public class TestSQLUserDAO {
 	@Test (expected = DAOException.class)
 	public void testUpdateUserFail() throws DAOException {
 		User user = new User ();
-		user.setName("david");
+		user.setIdUser(35);
+		user.setName ("david");
+		user.setSurname ("petrov");
+		user.setPhone ("8025-222-22-22");
+		user.setMail ("p@mail.ru");
+		user.setAddress ("Galo, 20-20");
 		userDAO.updateUser(user);
 	}
 
 	@Test
 	public void testChangeStatus() throws DAOException {
 		String status = "block";
-		userDAO.changeStatus(31, status);
-		User actual = userDAO.showUserById(31);
+		userDAO.changeStatus(1, status);
+		User actual = userDAO.showUserById(1);
 		assertEquals (status, actual.getStatus());
 	}
 }
