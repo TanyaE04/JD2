@@ -1,0 +1,159 @@
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial;
+  padding: 10px;
+    background-image: url(https://www.wallpaperup.com/uploads/wallpapers/2012/06/05/4098/fce8bf985b2e5a487328700deb232ec6-700.jpg);
+    background-color: #c7b39b; 
+    background-size: cover;
+ 
+}
+
+.header {
+  padding: 30px;
+  text-align: center;
+  background-image: url(https://www.avtorinok.ru/photo/pics/lotus/elise/35945-gthumb-gwdata1200-ghdata1000-gfitdatamax.jpg);
+background-size: cover;
+background-repeat: no-repeat;
+}
+
+.header h1 {
+  font-size: 50px;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #6A5ACD;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.message {
+	background-color:#66CDAA;
+}
+.leftcolumn { 
+	 padding-left: 10px;
+	 margin-top: 10px;
+ margin-right:10px;
+  float: left;
+  width: 25%;
+  background-color: #B0C4DE;
+ padding-bottom: 60px;
+}
+
+.maincolumn {  
+	 margin-top: 10px;
+ margin-right:10px;
+  
+  float: left;
+  width: 46%;
+  text-align: center;
+}
+
+.rightcolumn {
+	 padding-left: 10px;
+   margin-top: 10px;
+ margin-right:10px;
+  float: left;
+  width: 25%;
+  background-color: #ADD8E6;
+  padding: 10px 0px 30px 0px;
+  
+}
+
+.01 table {
+
+  width:100%;
+}
+.01 table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+  text-align: left;
+}
+.01 table td {
+	background: rgba(135, 206, 235, 0.5); 
+}
+.01 table th {
+  background-color: #8000ff;
+  color: white;
+}
+
+ .locale input[type=submit] {
+  background-color: #c0c0c0;
+  color: black;
+  padding: 2px 2px;
+  border: none;
+  cursor: pointer;
+  float:right;
+  text-align: center;
+  margin-top:10px;
+  margin-right:10px
+  }
+  
+ .search input[type=text] {
+  margin-top: 10px;
+  margin-left: 120px;
+  width: 75%;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('search.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+}
+
+  input[type=button] {
+  margin-top: 10px;
+  margin-left: 120px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+
+@media screen and (max-width: 800px) {
+  .leftcolumn, .maincolumn, .rightcolumn  {   
+    width: 100%;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .topnav a {
+    float: none;
+    width: 100%;
+  }
+}
+</style>

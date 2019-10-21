@@ -1,0 +1,145 @@
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial;
+  padding: 10px;
+  background: #f1f1f1;
+}
+
+.header {
+	background: url(https://s1.1zoom.me/b5050/786/Holden_Front_514217_2048x1152.jpg) no-repeat center;
+  padding: 5px;
+  text-align: center;
+ text-shadow: 1px 1px 1px #333;
+  background-color: #D8BFD8;
+background-size: cover;
+background-repeat: no-repeat;
+}
+
+.header h1 {
+	font-family: 'Dancing Script', cursive;
+	color:#FFF;
+	margin-bottom: 150px;
+  font-size: 50px;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #6A5ACD;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.leftcolumn {  
+ margin-top: 10px;
+ margin-right:10px;
+  float: left;
+  width: 25%;
+  background-color: white;
+  padding-left: 5px;
+ padding-bottom: 60px;
+}
+
+.maincolumn {  
+	margin-top: 10px;
+ margin-right:10px;
+  background: #c0c0c0;
+  float: left;
+  width: 45%;
+  text-align: center;
+}
+
+.rightcolumn form {
+	margin-top: 10px;
+  float: left;
+  width: 25%;
+  background-color: #8080ff;
+  padding: 10px 0px 30px 0px;
+  border-radius: 4px;
+  padding-left: 5px;
+}
+
+.car {
+ background: url(https://c7.uihere.com/files/259/597/316/vector-car-thumb.jpg) no-repeat center;
+  background-size: cover;
+  width: 100%;
+  padding: 20px 0px;
+}
+
+.we {
+ background: white url(https://www.ijn.com/wp-content/uploads/2016/05/poll.jpg) no-repeat;
+  background-size: contain;
+  width: 100%;
+  padding: 20px 0px;
+}
+
+input[type=text], [type=password] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  }
+ .locale input[type=submit] {
+  background-color: #c0c0c0;
+  color: black;
+  padding: 2px 2px;
+  border: none;
+  cursor: pointer;
+  float:right;
+  text-align: center;
+  margin-top:10px;
+  margin-right:10px
+  }
+  
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+
+@media screen and (max-width: 800px) {
+  .leftcolumn, .maincolumn, .rightcolumn  {   
+    width: 100%;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .topnav a {
+    float: none;
+    width: 100%;
+  }
+}
+</style>
