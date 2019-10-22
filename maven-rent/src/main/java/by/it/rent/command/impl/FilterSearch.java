@@ -2,6 +2,7 @@ package by.it.rent.command.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -23,7 +24,7 @@ public class FilterSearch implements Command {
 
 		String volkswagen = request.getParameter("volkswagen");
 		String audi = request.getParameter("audi");
-		String bwm = request.getParameter("bwm");
+		String bmw = request.getParameter("bmw");
 		String skoda = request.getParameter("skoda");
 		String toyota = request.getParameter("toyota");
 		String gearbox = request.getParameter("gearbox");
@@ -31,22 +32,35 @@ public class FilterSearch implements Command {
 		CarService carService = ServiceProvider.getInstance().getCarService();
 		List <Car> list = new ArrayList <Car> ();
 		
-		String [] pattern;
-		String [] mark = {volkswagen, audi, bwm, skoda, toyota};
-		
+		String [] pattern; 
+		String [] mark = {volkswagen, audi, bmw, skoda, toyota};
+		List <String> marks = new ArrayList<>();
 		for (String m:mark) {
-			if (m!=null) {
-				StringBuilder sb = new StringBuilder ();
-				sb.append('%');
-				sb.append(m);
-				sb.append('%');
-				m = sb.toString();
-				if (gearbox != null) {
-					StringBuilder sbgear = new StringBuilder ();
-					sbgear.append('%');
-					sbgear.append(gearbox);
-					sbgear.append('%');
-					gearbox = sbgear.toString();
+			if (m!= null) marks.add(m);
+		}
+		
+		boolean isGearbox = false;
+		if (gearbox!=null) {
+			gearbox = builder (gearbox);
+			isGearbox = true;
+		}
+		
+		if (marks.isEmpty()) {
+			System.out.print("null");
+			if (isGearbox) {
+				pattern = new String [1];
+				pattern [0] = gearbox;
+				 try {
+					 List <Car> listOne = carService.findCar(pattern);
+					 list.addAll(listOne);
+				} catch (ServiceException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			for (String m:marks) {
+				m = builder (m);
+				if (isGearbox) {
 					pattern = new String [2];
 					pattern [0] = m;
 					pattern [1] = gearbox;
@@ -69,6 +83,16 @@ public class FilterSearch implements Command {
 		request.setAttribute("cars", list);
 		RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.USER_AUTH_PAGE);
 		dispatcher.forward(request, response);
+		
+	}
+	
+	private String builder (String param) {
+		StringBuilder sb = new StringBuilder ();
+		sb.append('%');
+		sb.append(param);
+		sb.append('%');
+		param = sb.toString();
+		return param;
 		
 	}
 

@@ -63,7 +63,7 @@
 <br>
 <input type="checkbox" name="audi" value="Audi">Audi
 <br>
-<input type="checkbox" name="bwm" value="BWM">BWM
+<input type="checkbox" name="bmw" value="BMW">BMW
 <br>
 <input type="checkbox" name="skoda" value="Skoda">Skoda
 <br>
@@ -86,7 +86,7 @@
 		<p>Cпасибо за Ваш заказ!</p>
  	</c:if>
  <c:remove var = "order"/>
- 	<c:if test="${not empty requestScope.messageNotFound}">
+ 	<c:if test="${not empty sessionScope.messageNotFound}">
 		<c:out value="${messageNotFound}"></c:out>  <br>
  	</c:if>
  <c:remove var = "messageNotFound"/>
