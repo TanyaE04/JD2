@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it.rent.bean.NewUser;
 import by.it.rent.bean.User;
 import by.it.rent.dao.DAOException;
@@ -15,6 +18,7 @@ import by.it.rent.dao.PoolConnection;
 import by.it.rent.dao.UserDAO;
 
 public class SQLUserDAO implements UserDAO {
+	Logger log= LogManager.getLogger(SQLUserDAO.class.getName());
 	private static PoolConnection pc;
 	private static final String SELECT_USERS_BY_LOGIN = "SELECT * FROM users LEFT JOIN userstatus ON users.id_user=userstatus.id_user WHERE login=? AND password=?";
 	private static final String SELECT_USERS_BY_LOG = "SELECT * FROM users WHERE login=?";
@@ -28,12 +32,15 @@ public class SQLUserDAO implements UserDAO {
 	private static final String UPDATE_USERS_STATUS = "UPDATE userstatus SET status=? WHERE id_user=?";
 	private static final String UPDATE_USER = "UPDATE users SET surname=?, name=?, phone_number=?, mail=?, adress=? WHERE id_user=?";
 	private static final String UPDATE_DETAILS = "UPDATE details SET driver_license=?, passport=? WHERE id_user=?";
+	private static final String ADMIN = "Администратор";
+	private static final String USER = "Пользователь";
+			
 
 	static {
 		try {
 			pc = PoolConnection.getInstance();
 		} catch (RuntimeException e) {
-			System.err.println(e);
+			throw new RuntimeException (e);
 		}
 	}
 
@@ -61,7 +68,7 @@ public class SQLUserDAO implements UserDAO {
 					try {
 						prst.close();
 					} catch (SQLException e) {
-						System.err.println(e);
+						throw new DAOException (e);
 					}
 				}
 				prst = connection.prepareStatement(SELECT_DETAILS_BY_IDUSER);
@@ -74,15 +81,15 @@ public class SQLUserDAO implements UserDAO {
 			} else
 				user = null;
 		} catch (SQLException e) {
-			throw new DAOException("Ошибка при авторизации", e);
+			throw new DAOException("ERROR: authorization", e);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -116,7 +123,7 @@ public class SQLUserDAO implements UserDAO {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					throw new DAOException (e);
 				}
 			}
 			prst = connection.prepareStatement(SELECT_USERS_BY_LOG);
@@ -133,17 +140,17 @@ public class SQLUserDAO implements UserDAO {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				throw new DAOException (e1);
 			}
-			throw new DAOException("Ошибка при регистрации", e);
+			throw new DAOException("ERROR: registration", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -176,17 +183,17 @@ public class SQLUserDAO implements UserDAO {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				throw new DAOException (e1);
 			}
-			throw new DAOException("Ошибка при смене роли", e);
+			throw new DAOException("ERROR: change role", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -209,9 +216,9 @@ public class SQLUserDAO implements UserDAO {
 				int idRole = result.getInt(2);
 				user.setIdRole(idRole);
 				if (idRole == 1) {
-					user.setRoleName("Администратор");
+					user.setRoleName(ADMIN);
 				} else {
-					user.setRoleName("Пользователь");
+					user.setRoleName(USER);
 				}
 				user.setSurname(result.getString(3));
 				user.setName(result.getString(4));
@@ -224,15 +231,15 @@ public class SQLUserDAO implements UserDAO {
 				list.add(user);
 			}
 		} catch (SQLException e) {
-			throw new DAOException("ошибка при поиске пользователей", e);
+			throw new DAOException("ERROR: find all users", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -253,15 +260,15 @@ public class SQLUserDAO implements UserDAO {
 				return true;
 			} 
 		} catch (SQLException e) {
-			throw new DAOException("Ошибка при проверке логина", e);
+			throw new DAOException("ERROR: check login", e);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -294,7 +301,7 @@ public class SQLUserDAO implements UserDAO {
 					try {
 						prst.close();
 					} catch (SQLException e) {
-						System.err.println(e);
+						throw new DAOException (e);
 					}
 				}
 				prst = connection.prepareStatement(SELECT_DETAILS_BY_IDUSER);
@@ -307,15 +314,15 @@ public class SQLUserDAO implements UserDAO {
 			} else
 				user = null;
 		} catch (SQLException e) {
-			throw new DAOException("Ошибка при авторизации", e);
+			throw new DAOException("ERROR: find user by ID", e);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -340,17 +347,17 @@ public class SQLUserDAO implements UserDAO {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				throw new DAOException (e1);
 			}
-			throw new DAOException("Ошибка при добавлении деталей", e);
+			throw new DAOException("ERROR: add details", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -372,17 +379,17 @@ public class SQLUserDAO implements UserDAO {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				throw new DAOException (e1);
 			}
-			throw new DAOException("Ошибка при добавлении деталей", e);
+			throw new DAOException("ERROR: add user status", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -407,7 +414,7 @@ public class SQLUserDAO implements UserDAO {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					throw new DAOException (e);
 				}
 			}
 			prst = connection.prepareStatement(UPDATE_DETAILS);
@@ -416,15 +423,15 @@ public class SQLUserDAO implements UserDAO {
 			prst.setInt(3, user.getIdUser());
 			prst.executeUpdate();
 		} catch (SQLException e) {
-			throw new DAOException("Ошибка при смене редактировании", e);
+			throw new DAOException("ERROR: update user", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
@@ -442,15 +449,15 @@ public class SQLUserDAO implements UserDAO {
 			prst.setString(1, status);
 			prst.executeUpdate();
 		} catch (SQLException e) {
-			throw new DAOException("Ошибка при смене статуса", e);
+			throw new DAOException("ERROR: change user status", e);
 		} catch (InterruptedException e) {
-			System.err.println();
+			throw new DAOException (e);
 		} finally {
 			if (prst != null) {
 				try {
 					prst.close();
 				} catch (SQLException e) {
-					System.err.println(e);
+					log.debug("This is a DEBUG-message in SQLUserDAO");
 				}
 			}
 			pc.release(connection);
