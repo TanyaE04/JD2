@@ -24,4 +24,15 @@ public class RequestParameterName {
 	public static final String PAGE_POSITION = "position";
 	public static final String USER_STATUS = "userstatus";
 	public static final String SEARCH = "search";
+	public static final String ERROR = "error";
+	public static final String USER = "user";
+	public static final String USERS = "users";
+	public static final String CARS = "cars";
+	public static final String CAR_INFO = "infocar";
+	public static final String MESSAGE = "message";
+	public static final String ORDER = "order";
+	public static final String ORDERS = "orders";
+	public static final String COUNTS = "counts";
+	public static final String PAGE = "page";
+	
 }

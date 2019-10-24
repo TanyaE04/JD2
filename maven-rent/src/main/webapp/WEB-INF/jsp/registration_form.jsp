@@ -92,8 +92,8 @@
      <td align="right" >Логин </td>
      <td><input type="text" name="login" value=""></td>
      <td>
-     	<c:if test="${not empty requestScope.errorLoginExist}">
-     	<p><c:out value="${requestScope.errorLoginExist}"/></p>
+     	<c:if test="${not empty requestScope.error}">
+     	<p><fmt:message bundle="${loc}" key="${error}" /></p>
      	</c:if>
      </td>
     </tr>

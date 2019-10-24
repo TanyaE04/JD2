@@ -13,9 +13,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import static by.it.rent.dao.PoolConnection.getInstance;
 
 public class SQLCarDAO implements CarDAO {
+	Logger log= LogManager.getLogger(SQLCarDAO.class.getName());
     private static PoolConnection pc;
     private static final String INSERT_CAR ="INSERT INTO car VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_CAR_BY_SEARCH= "SELECT * FROM car WHERE (concat (brand, model, year, gearbox, color, status)  like ? and  concat (brand, model, year, gearbox, color, status)  like ?);";
@@ -28,7 +32,7 @@ public class SQLCarDAO implements CarDAO {
         try {
             pc = getInstance();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            throw new RuntimeException (e);
         }
     }
 
@@ -54,17 +58,17 @@ public class SQLCarDAO implements CarDAO {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                throw new DAOException (ex);
             }
-            throw new DAOException("Ошибка при добавлении авто", e);
+            throw new DAOException("ERROR: adding car", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLCarDAO");
                 }
             }
             pc.release(connection);
@@ -82,15 +86,15 @@ public class SQLCarDAO implements CarDAO {
             prst.setInt(2,idCar);
             prst.executeUpdate();
         } catch (SQLException e) {
-            throw new DAOException("Ошибка при изменеии статуса", e);
+            throw new DAOException("ERROR: change car's status", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException(e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLCarDAO");
                 }
             }
             pc.release(connection);
@@ -127,15 +131,15 @@ public class SQLCarDAO implements CarDAO {
                 list.add(car);
             }
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске авто по марке", e);
+            throw new DAOException("ERROR: find car by pattern", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLCarDAO");
                 }
             }
             pc.release(connection);
@@ -167,15 +171,15 @@ public class SQLCarDAO implements CarDAO {
                 list.add(car);
             }
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске авто", e);
+            throw new DAOException("ERROR: show all cars", e);
         } catch (InterruptedException e) {
-            System.err.println();
+            throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLCarDAO");
                 }
             }
             pc.release(connection);
@@ -205,15 +209,15 @@ public class SQLCarDAO implements CarDAO {
             car.setIdClass(result.getInt(9));
                
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске авто по id", e);
+            throw new DAOException("ERROR: find car by ID", e);
         } catch (InterruptedException e) {
-            System.err.println();
+            throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLCarDAO");
                 }
             }
             pc.release(connection);

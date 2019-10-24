@@ -60,7 +60,7 @@
     
 	<div class="rightcolumn" >
 		<c:if test="${not empty requestScope.error}">
-            <p style="color:red;"> <c:out value="${requestScope.error}"/> <p>
+            <p style="color:red;"> <fmt:message bundle="${loc}" key="${error}" /> <p>
         </c:if>
 	<form action="controller" method="post">
 		<input type="hidden" name="command" value="authorization" />

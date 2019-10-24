@@ -16,11 +16,10 @@ import by.it.rent.controller.JSPPages;
 import by.it.rent.controller.RequestParameterName;
 import by.it.rent.dao.DAOException;
 import by.it.rent.dao.DAOProvider;
-import by.it.rent.dao.PoolConnection;
 import by.it.rent.dao.UserDAO;
 
 public class EditUser implements Command {
-	Logger log= LogManager.getLogger(PoolConnection.class.getName());
+	Logger log= LogManager.getLogger(EditUser.class.getName());
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
@@ -29,11 +28,13 @@ public class EditUser implements Command {
 		User user = new User();
 			try {
 				user = userDAO.showUserById(idUser);
-				request.setAttribute("user", user);	
+				request.setAttribute(RequestParameterName.USER, user);	
 				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.EDIT_USER_PAGE);
 				dispatcher.forward(request, response);
 			} catch (DAOException e) {
-				log.debug("This is a DEBUG-message");
+				log.debug("This is a DEBUG-message in EditUser");
+				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+				dispatcher.forward(request, response);
 			}
 	}
 

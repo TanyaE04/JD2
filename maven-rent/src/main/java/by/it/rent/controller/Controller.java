@@ -30,8 +30,8 @@ public class Controller extends HttpServlet {
 		Command command;
 	
 		if (request.getParameter(RequestParameterName.LOCAL) != null) {
-			request.getSession(true).setAttribute("local", request.getParameter(RequestParameterName.LOCAL));
-			String page = request.getParameter("page");
+			request.getSession(true).setAttribute(RequestParameterName.LOCAL, request.getParameter(RequestParameterName.LOCAL));
+			String page = request.getParameter(RequestParameterName.PAGE);
 			response.sendRedirect(page);
 			
 		} else {

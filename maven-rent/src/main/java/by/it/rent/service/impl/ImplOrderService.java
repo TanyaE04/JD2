@@ -1,4 +1,4 @@
-package by.it.rent.service.impl;
+ package by.it.rent.service.impl;
 
 import java.util.List;
 

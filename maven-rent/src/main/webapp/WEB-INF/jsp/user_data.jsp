@@ -67,10 +67,10 @@
 
 	<div class="maincolumn">
 	<div class="message">
-	<c:if test="${not empty sessionScope.editMessage}">
-<c:out value="${sessionScope.editMessage}"></c:out>  <br>
+	<c:if test="${not empty sessionScope.message}">
+<fmt:message bundle="${loc}" key="${message}" /> <br>
  </c:if>
- <c:remove var = "editMessage"/>
+ <c:remove var = "message"/>
 
 </div>
 

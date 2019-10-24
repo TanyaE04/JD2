@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it.rent.bean.NewUser;
 import by.it.rent.bean.User;
 import by.it.rent.command.Command;
@@ -18,7 +21,9 @@ import by.it.rent.service.ServiceProvider;
 import by.it.rent.service.UserService;
 
 public class RegistrationCommand implements Command {
-
+	Logger log = LogManager.getLogger(RegistrationCommand.class.getName());
+	private static final String LOGIN_EXISTS = "error.same.login";
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String name;
@@ -55,20 +60,19 @@ public class RegistrationCommand implements Command {
 			user = userService.registration(newUser);
 			if (user != null) {
 				HttpSession session = request.getSession(true);
-				session.setAttribute("user", user);
+				session.setAttribute(RequestParameterName.USER, user);
 				goToPage = JSPPages.USER_AUTH_PAGE;
 			} else {
-				request.setAttribute("errorLoginExist", "Такой логин уже существует");
+				request.setAttribute(RequestParameterName.ERROR, LOGIN_EXISTS);
 				goToPage = JSPPages.REGISTRATION_PAGE;
 			}
-			RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
-			dispatcher.forward(request, response);
 
 		} catch (ServiceException e) {
-			System.err.println(e);// log
-
+			goToPage = JSPPages.ERROR_PAGE;
+			log.debug("This is a DEBUG-message in RegistrationCommand");
 		}
-
+		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
+		dispatcher.forward(request, response);
 	}
 
 }

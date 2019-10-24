@@ -10,15 +10,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it.rent.bean.Car;
 import by.it.rent.command.Command;
 import by.it.rent.controller.JSPPages;
+import by.it.rent.controller.RequestParameterName;
 import by.it.rent.service.CarService;
 import by.it.rent.service.ServiceException;
 import by.it.rent.service.ServiceProvider;
 
 public class FilterSearch implements Command {
-
+	Logger log = LogManager.getLogger(FilterSearch.class.getName());
+	private static final String NOT_FOUND = "message.not.found";
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
@@ -28,6 +33,7 @@ public class FilterSearch implements Command {
 		String skoda = request.getParameter("skoda");
 		String toyota = request.getParameter("toyota");
 		String gearbox = request.getParameter("gearbox");
+		String goToPage = JSPPages.USER_AUTH_PAGE;
 		
 		CarService carService = ServiceProvider.getInstance().getCarService();
 		List <Car> list = new ArrayList <Car> ();
@@ -38,15 +44,12 @@ public class FilterSearch implements Command {
 		for (String m:mark) {
 			if (m!= null) marks.add(m);
 		}
-		
 		boolean isGearbox = false;
 		if (gearbox!=null) {
 			gearbox = builder (gearbox);
 			isGearbox = true;
 		}
-		
 		if (marks.isEmpty()) {
-			System.out.print("null");
 			if (isGearbox) {
 				pattern = new String [1];
 				pattern [0] = gearbox;
@@ -54,7 +57,8 @@ public class FilterSearch implements Command {
 					 List <Car> listOne = carService.findCar(pattern);
 					 list.addAll(listOne);
 				} catch (ServiceException e) {
-					e.printStackTrace();
+					log.debug("This is a DEBUG-message in FilterSearch");
+					goToPage = JSPPages.ERROR_PAGE;
 				}
 			}
 		} else {
@@ -72,16 +76,17 @@ public class FilterSearch implements Command {
 					 List <Car> listOne = carService.findCar(pattern);
 					 list.addAll(listOne);
 				} catch (ServiceException e) {
-					e.printStackTrace();
+					log.debug("This is a DEBUG-message in FilterSearch");
+					goToPage = JSPPages.ERROR_PAGE;
 				}
 			}
 		}
 		if (list.isEmpty()) {
-			request.getSession(false).setAttribute("messageNotFound", "По Вашему запросу ничего не найдено");
+			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, NOT_FOUND);
 		}
 		
 		request.setAttribute("cars", list);
-		RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.USER_AUTH_PAGE);
+		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
 		dispatcher.forward(request, response);
 		
 	}

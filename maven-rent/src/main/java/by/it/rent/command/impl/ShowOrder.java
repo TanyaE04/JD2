@@ -10,6 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import by.it.rent.bean.Order;
 
@@ -22,7 +24,7 @@ import by.it.rent.service.ServiceProvider;
 
 
 public class ShowOrder implements Command {
-
+	Logger log = LogManager.getLogger(ShowOrder.class.getName());
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		OrderService orderService=ServiceProvider.getInstance().getOrderService();
@@ -37,23 +39,19 @@ public class ShowOrder implements Command {
 			for (int i=0; i<pages; i++) {
 				countOfPages.add(i);
 			}
-			request.setAttribute("counts", countOfPages);
+			request.setAttribute(RequestParameterName.COUNTS, countOfPages);
 			if (pos!=null) {
 				int position = Integer.parseInt(pos);
 				int count = 10;
 				orderList = orderList.subList(position*count, (position+count));
 			}
-			
-			request.setAttribute("orders", orderList);
-			
+			request.setAttribute(RequestParameterName.ORDERS, orderList);
 			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.AD_ORDERS_PAGE);
 			dispatcher.forward(request, response);
-			
 		}catch(ServiceException e) {
-			System.err.println(e);//log
-			
+			log.debug("This is a DEBUG-message in ShowOrder");
+			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+			dispatcher.forward(request, response);			
 		}
-		
 	}
-
 }

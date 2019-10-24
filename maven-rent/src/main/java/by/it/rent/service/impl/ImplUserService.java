@@ -23,7 +23,6 @@ public class ImplUserService implements UserService {
 		}
 		else {
 			UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
-
 			try {
 				user = userDAO.authorization(login, password);
 			} catch (DAOException e) {

@@ -13,6 +13,6 @@
 <body>
 
 <h1>Oops! <br> Please, come back later!</h1>
-
+<a href="index.jsp">To main page</a>
 </body>
 </html>

@@ -17,9 +17,13 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import static by.it.rent.dao.PoolConnection.getInstance;
 
 public class SQLOrderDAO implements OrderDAO {
+	Logger log= LogManager.getLogger(SQLOrderDAO.class.getName());
     private static PoolConnection pc;
     private static final String INSERT_ORDER = "INSERT INTO car_order VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_ORDER_BY_ID_TOTAL = "SELECT total FROM car_order WHERE id_order=?";
@@ -38,7 +42,7 @@ public class SQLOrderDAO implements OrderDAO {
         try {
             pc = getInstance();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            throw new RuntimeException (e);
         }
     }
 
@@ -59,7 +63,7 @@ public class SQLOrderDAO implements OrderDAO {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                    throw new DAOException (e);
                 }
             }
             connection.setAutoCommit(false);
@@ -86,46 +90,21 @@ public class SQLOrderDAO implements OrderDAO {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                throw new DAOException (ex);
             }
-            throw new DAOException("Ошибка при фоомировании заказа", e);
+            throw new DAOException("ERROR: create order", e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
         }
         return idOrder;
     }
-
-   /* @Override
-    public void removeOrder(int idOrder) throws SQLException, DAOException {
-        Connection connection = null;
-        PreparedStatement prst = null;
-        try {
-            connection = pc.take();
-            prst = connection.prepareStatement(DELETE_ORDER_BY_ID);
-            prst.setInt(1, idOrder);
-            prst.executeUpdate();
-        } catch (SQLException | InterruptedException e) {
-            throw new DAOException("РћС€РёР±РєР° РїСЂРё СѓРґР°Р»РµРЅРёРё Р·Р°РєР°Р·Р°", e);
-        } finally {
-            if (prst != null) {
-                try {
-                    prst.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
-                }
-            }
-            pc.release(connection);
-        }
-    }
-
-    */
 
     @Override
     public double bill(int idOrder, int realDays) throws DAOException {
@@ -143,7 +122,7 @@ public class SQLOrderDAO implements OrderDAO {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                    throw new DAOException(e);
                 }
             }
             prst = connection.prepareStatement(SELECT_CAR_BY_IDCAR_PRICE);
@@ -156,7 +135,7 @@ public class SQLOrderDAO implements OrderDAO {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	throw new DAOException (e);
                 }
             }
             prst=connection.prepareStatement(UPDATE_ORDER_DAYS);
@@ -166,20 +145,20 @@ public class SQLOrderDAO implements OrderDAO {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	throw new DAOException (e);
                 }
             }
             prst=connection.prepareStatement(UPDATE_ORDER_TOTAL);
             prst.setDouble(1,bill);
             prst.executeUpdate();
         } catch (SQLException | InterruptedException e) {
-            throw new DAOException("РћС€РёР±РєР° РїСЂРё РІС‹СЃС‚Р°РІР»РµРЅРёРё СЃС‡РµС‚Р°", e);
+            throw new DAOException("ERROR: order bill", e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
@@ -200,13 +179,13 @@ public class SQLOrderDAO implements OrderDAO {
             if(result.next()){
             sum = result.getDouble("sum");}
         } catch (SQLException | InterruptedException e) {
-            throw new DAOException("РћС€РёР±РєР° РїРѕРґСЃС‡РµС‚Рµ РїРѕРІСЂРµР¶РґРµРЅРёР№", e);
+            throw new DAOException("ERROR: add damage", e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
@@ -248,15 +227,15 @@ public class SQLOrderDAO implements OrderDAO {
             order.setIdRefusal(result.getInt(8));
             order.setIdUsers (result.getInt(9));
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске заказа по id", e);
+            throw new DAOException("ERROR: find order by ID", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
@@ -293,7 +272,7 @@ public class SQLOrderDAO implements OrderDAO {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	throw new DAOException (e);
                 }
             }
             prst = connection.prepareStatement(SELECT_ALL_ORDERS);
@@ -311,15 +290,15 @@ public class SQLOrderDAO implements OrderDAO {
                 order.setIdUsers (result.getInt(9));
                 list.add(order);}
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске заказов", e);
+            throw new DAOException("ERROR: show all orders", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
@@ -352,15 +331,15 @@ public class SQLOrderDAO implements OrderDAO {
                 list.add(order);
             }
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске заказов", e);
+            throw new DAOException("ERROR: find orders limit", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
@@ -397,15 +376,15 @@ public class SQLOrderDAO implements OrderDAO {
                 list.add(order);
             }
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске заказов", e);
+            throw new DAOException("ERROR: find user's orders", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);
@@ -424,15 +403,15 @@ public class SQLOrderDAO implements OrderDAO {
             prst.setInt(2,idOrder);
             prst.executeUpdate();
         } catch (SQLException e) {
-            throw new DAOException("ошибка при поиске заказов", e);
+            throw new DAOException("ERROR: change order status", e);
         } catch (InterruptedException e) {
-            System.err.println();
+        	throw new DAOException (e);
         } finally {
             if (prst != null) {
                 try {
                     prst.close();
                 } catch (SQLException e) {
-                    System.err.println(e);
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
                 }
             }
             pc.release(connection);

@@ -10,13 +10,11 @@ import by.it.rent.command.Command;
 import by.it.rent.controller.JSPPages;
 
 public class LogOut implements Command{
-
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		request.getSession(false).invalidate();
-		
 		request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
-		
 	}
 
 }

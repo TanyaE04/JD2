@@ -7,6 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it.rent.bean.Car;
 import by.it.rent.bean.Order;
 import by.it.rent.command.Command;
@@ -19,7 +22,9 @@ import by.it.rent.service.ServiceProvider;
 import by.it.rent.service.UserService;
 
 public class OrderCar implements Command{
-
+	Logger log = LogManager.getLogger(OrderCar.class.getName());
+	private static final String ALREADY_RENT = "message.already.rent";
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		 
@@ -55,18 +60,19 @@ public class OrderCar implements Command{
 			}
 			if (order==null) {
 				Car car = carService.findCarByID(newOrder.getIdCar());
-				request.setAttribute ("infocar", car);
-				request.setAttribute("messageAlreadyRent", "ƒанный автомобиль на указанные даты арендован");
+				request.setAttribute (RequestParameterName.CAR_INFO, car);
+				request.setAttribute(RequestParameterName.CAR_INFO, ALREADY_RENT);
 				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_PAGE);
 				dispatcher.forward(request, response);
 			} else {
-				request.getSession(false).setAttribute("order", order);
+				request.getSession(false).setAttribute(RequestParameterName.ORDER, order);
 				response.sendRedirect("controller?command=showcar");
 			}
 			
 		} catch(ServiceException e) {
-			System.err.println(e);//log
-			
+			log.debug("This is a DEBUG-message in OrderCar");
+			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+			dispatcher.forward(request, response);
 		}
 		
 		

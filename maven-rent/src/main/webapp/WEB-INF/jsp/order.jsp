@@ -41,8 +41,8 @@
 <p> Информация о авто:<br>
 <c:out value="${infocar.brand} ${infocar.model}, ${infocar.color}, ${infocar.year} г.в., ${infocar.gearbox} "></c:out>
 </p>
-    <b style="color: red;"><c:if test="${not empty requestScope.messageAlreadyRent}">
-		<c:out value="${messageAlreadyRent}"></c:out>  <br>
+    <b style="color: red;"><c:if test="${not empty requestScope.message}">
+		<fmt:message bundle="${loc}" key="${message}" /> <br>
  	</c:if></b>
   <c:remove var = "messageAlreadyRent"/>
 <form name="orderForm" onsubmit="return myFunction()" action="controller" method="post">

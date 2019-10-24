@@ -2,19 +2,26 @@ package by.it.rent.command.impl;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it.rent.bean.User;
 import by.it.rent.command.Command;
+import by.it.rent.controller.JSPPages;
 import by.it.rent.controller.RequestParameterName;
 import by.it.rent.dao.DAOException;
 import by.it.rent.dao.DAOProvider;
 import by.it.rent.dao.UserDAO;
 
 public class UpdateUser implements Command{
-
+	Logger log = LogManager.getLogger(UpdateUser.class.getName());
+	private static final String EDIT_MESSAGE = "message.edit.save";
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String name;
@@ -34,7 +41,7 @@ public class UpdateUser implements Command{
 		address = request.getParameter(RequestParameterName.ADDRESS);
 		passport = request.getParameter(RequestParameterName.PASSPORT);
 		driverLicense = request.getParameter(RequestParameterName.DRIVER_LICENSE);
-		String page = request.getParameter("page");
+		String page = request.getParameter(RequestParameterName.PAGE);
 		
 		User user = new User();
 		user.setIdUser(idUser);
@@ -52,14 +59,17 @@ public class UpdateUser implements Command{
 			userDAO.updateUser(user);
 			
 			
-			request.getSession(false).setAttribute("editMessage", "Измения успешно сохранены");
+			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
 			
 			if (page!=null) {
 				response.sendRedirect("controller?command=showuser");
 			} else {
-			response.sendRedirect("controller?command=userdata");}
+				System.out.print("!!!!!!!!!!!!!!!!");
+				response.sendRedirect("controller?command=userdata");}
 		} catch (DAOException e) {
-			e.printStackTrace();
+			log.debug("This is a DEBUG-message in UpdateUser");
+			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+			dispatcher.forward(request, response);
 		}
 		
 		

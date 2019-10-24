@@ -21,7 +21,7 @@ import by.it.rent.service.ServiceProvider;
 
 
 public class ChooseCar implements Command {
-
+	Logger log = LogManager.getLogger(ChooseCar.class.getName());
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Logger log= LogManager.getLogger(PoolConnection.class.getName());
@@ -33,13 +33,14 @@ public class ChooseCar implements Command {
 		try {
 			car = carService.findCarByID(idCar);
 			
-			request.setAttribute("infocar", car);
+			request.setAttribute(RequestParameterName.CAR_INFO, car);
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_PAGE);
 			dispatcher.forward(request, response);
 		}catch(ServiceException e) {
-			log.debug("This is a DEBUG-message");
-			
+			log.debug("This is a DEBUG-message in ChooseCar");
+			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+			dispatcher.forward(request, response);			
 		}
 		
 	}

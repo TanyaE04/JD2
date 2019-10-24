@@ -50,21 +50,21 @@ public class PoolConnection {
         return con;
     }
 
-    public void release(Connection con)  {
+    public void release(Connection con) throws DAOException  {
         if (con != null) {
             try {
 				con.setAutoCommit(true);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new DAOException ("Pool connection");
 			}
             try {
 				listCon.put(con);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				throw new DAOException ("Pool connection (interrupted)");
 			}
         }
         else {
-            log.debug("This is a DEBUG-message");
+            log.debug("This is a DEBUG-message in pool (release)");
         }
     }
     public void closeCon (){
@@ -73,7 +73,7 @@ public class PoolConnection {
                 if (connection!=null)
                 connection.close();
             } catch (SQLException e){
-                System.err.println(e);
+            	log.debug("This is a DEBUG-message in poool (closeconnection)");
             }
         }
     }

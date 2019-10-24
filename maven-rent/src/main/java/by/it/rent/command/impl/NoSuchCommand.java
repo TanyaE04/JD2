@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import by.it.rent.command.Command;
 
 public class NoSuchCommand implements Command{
-
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		System.out.println("unknown command");

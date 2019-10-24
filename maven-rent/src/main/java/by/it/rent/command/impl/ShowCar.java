@@ -16,6 +16,7 @@ import by.it.rent.bean.Car;
 import by.it.rent.bean.User;
 import by.it.rent.command.Command;
 import by.it.rent.controller.JSPPages;
+import by.it.rent.controller.RequestParameterName;
 import by.it.rent.service.CarService;
 import by.it.rent.service.ServiceException;
 import by.it.rent.service.ServiceProvider;
@@ -35,21 +36,18 @@ public class ShowCar implements Command {
 		
 		try {
 			list = carService.showAllCars();
-			
-			request.setAttribute("cars", list);
-			user = (User) request.getSession(false).getAttribute("user");
+			request.setAttribute(RequestParameterName.CARS, list);
+			user = (User) request.getSession(false).getAttribute(RequestParameterName.USER);
 			if(user!=null && user.getIdRole()==1) {
 				goToPage=JSPPages.AD_CARS_PAGE;
 			}
 			else {goToPage=JSPPages.USER_AUTH_PAGE;}
-			
-			RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
-			dispatcher.forward(request, response);
-			
 		}catch(ServiceException e) {
-			log.debug("This is a DEBUG-message");
-			
+			log.debug("This is a DEBUG-message in ShowCar");
+			goToPage = JSPPages.ERROR_PAGE;
 		}
+		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
+		dispatcher.forward(request, response);
 		
 		
 	}
