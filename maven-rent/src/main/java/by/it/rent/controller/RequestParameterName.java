@@ -34,5 +34,6 @@ public class RequestParameterName {
 	public static final String ORDERS = "orders";
 	public static final String COUNTS = "counts";
 	public static final String PAGE = "page";
+	public static final String ADMIN = "admin";
 	
 }

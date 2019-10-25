@@ -12,6 +12,9 @@
 <fmt:setBundle basename="localization.local" var="loc"/>
 <fmt:message bundle="${loc}" key="local.locbutton.ru" var="ru"/>
 <fmt:message bundle="${loc}" key="local.locbutton.en" var="en"/>
+<fmt:message bundle="${loc}" key="button.logout" var="butlogout"/>
+<fmt:message bundle="${loc}" key="button.back" var="butback"/>
+<fmt:message bundle="${loc}" key="button.edit" var="butedit"/>
 </head>
 <body>
 <style>  
@@ -37,7 +40,7 @@ table th {
     	<form action="controller" method="post">
 					<input type="hidden" name="command" value="logout" />
 					
-					<input style="border-radius: 12px; border: 2px solid #f44336;float:right; margin-top:10px;"type="submit" value="Выйти" />
+					<input style="border-radius: 12px; border: 2px solid #f44336;float:right; margin-top:10px;"type="submit" value="${butlogout}" />
 		</form></c:if>
 <div class="topnav">
   <a href="index.jsp"><fmt:message bundle="${loc}" key="local.href.tomain"/></a>
@@ -91,13 +94,13 @@ table th {
             <td align="left"><input type="text" name="driverlicense" value="${user.driverLicense}" pattern="[0-9]{1}[A-Z]{2}[0-9]{6}" required/>
 	        <span>Format: 0AA123456</span></td>
        </tr>
-       <tr><td></td><td align="left"><input type="submit" value="Редактировать" /></td></tr>
+       <tr><td></td><td align="left"><input type="submit" value="${butedit}" /></td></tr>
     </table>
     </form>
     </div>
 <div>
 </div>
-<input type="button" onclick="history.back();" value="Назад"/>
+<input type="button" onclick="history.back();" value="${butback}"/>
 
 </body>
 </html>

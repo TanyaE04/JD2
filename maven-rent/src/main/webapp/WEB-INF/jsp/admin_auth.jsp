@@ -12,13 +12,15 @@
 <fmt:setBundle basename="localization.local" var="loc"/>
 <fmt:message bundle="${loc}" key="local.locbutton.ru" var="ru"/>
 <fmt:message bundle="${loc}" key="local.locbutton.en" var="en"/>
+<fmt:message bundle="${loc}" key="button.logout" var="butlogout"/>
+<fmt:message bundle="${loc}" key="button.back" var="butback"/>
 </head>
 
 
 <body>
 
 <div class="header">
-		<h1>Добро пожаловать, </h1>
+		<h1><fmt:message bundle="${loc}" key="welcome.message.welcome"/>,</h1>
 		<h2> <c:out value="Админ ${sessionScope.user.name} ${sessionScope.user.surname}" ></c:out></h2>
 	
 </div>
@@ -26,7 +28,7 @@
     	<form action="controller" method="post">
 					<input type="hidden" name="command" value="logout" />
 					
-					<input style="border-radius: 12px; border: 2px solid #f44336;float:right; margin-top:10px;"type="submit" value="Выйти" />
+					<input style="border-radius: 12px; border: 2px solid #f44336;float:right; margin-top:10px;"type="submit" value="${butlogout}" />
 		</form></c:if>
 <div class="topnav">
  <a href="index.jsp"><fmt:message bundle="${loc}" key="local.href.tomain"/></a>
@@ -34,11 +36,11 @@
   <div  class="locale">
   <form action="controller" method="post">
 		<input type="hidden" name="local" value="ru_RU" />
-		<input type="hidden" name="page" value="controller?command=authorization&login=${login}&password=${password}" />
+		<input type="hidden" name="page" value="admin" />
 		<input  type="submit" value="${ru}"/></form>
   <form action="controller" method="post">
 		<input type="hidden" name="local" value="en" />
-		<input type="hidden" name="page" value="controller?command=authorization&login=${login}&password=${password}" />
+		<input type="hidden" name="page" value="admin" />
 		<input  type="submit" value="${en}"/>
 	</form>
 </div>
@@ -72,7 +74,7 @@
 	</div>
 </div>
 
-<input type="button" onclick="history.back();" value="Назад"/>
+<input type="button" onclick="history.back();" value="${butback}"/>
 
 </body>
 </html>

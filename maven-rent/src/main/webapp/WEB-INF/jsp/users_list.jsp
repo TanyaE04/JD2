@@ -45,7 +45,7 @@ table th {
 		</form></c:if>
 <div class="topnav">
   <a href="index.jsp"><fmt:message bundle="${loc}" key="local.href.tomain"/></a>
-  <a href="controller?command=showorder&position=0&count=10"><fmt:message bundle="${loc}" key="local.href.orders" /></a>
+  <a href="controller?command=showorder&position=0"><fmt:message bundle="${loc}" key="local.href.orders" /></a>
    <a href="controller?command=showcar"><fmt:message bundle="${loc}" key="local.href.cars" /></a>
   <div  class="locale">
   <form action="controller" method="post">

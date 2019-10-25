@@ -55,7 +55,7 @@
 <div class="search">
 	<form action="controller" method="post">
 		<input type="hidden" name="command" value="search" />
-  		<input  type="text" name="search" placeholder="Search...">
+  		<input  type="text" name="search" placeholder="${butsearch}...">
   		<input  type="submit" value="${butsearch}"/></form>
 	</form>
 </div>	

@@ -13,6 +13,8 @@
 
 <fmt:message bundle="${loc}" key="local.locbutton.ru" var="ru"/>
 <fmt:message bundle="${loc}" key="local.locbutton.en" var="en"/>
+<fmt:message bundle="${loc}" key="button.logout" var="butlogout"/>
+<fmt:message bundle="${loc}" key="button.back" var="butback"/>
 </head>
 
 <body>
@@ -100,7 +102,7 @@
     	<form action="controller" method="post">
 					<input type="hidden" name="command" value="logout" />
 					
-					<input style="border-radius: 12px; border: 2px solid #f44336;float:right; margin-top:10px;"type="submit" value="Выйти" />
+					<input style="border-radius: 12px; border: 2px solid #f44336;float:right; margin-top:10px;"type="submit" value="${butlogout}" />
 		</form>
     <c:if test="${sessionScope.user.idRole!=1}">
     
@@ -117,7 +119,7 @@
    
 
 <div class="maincolumn">
-	<input type="button" onclick="history.back();" value="Назад"/>
+	<input type="button" onclick="history.back();" value="${butback}"/>
 	</div>
 </body>
 </html>

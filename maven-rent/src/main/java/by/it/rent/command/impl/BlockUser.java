@@ -33,10 +33,8 @@ public class BlockUser implements Command{
 			case "block":
 				status=null;
 				break;
-			case "null":
-				status="block";
-				break;
 			default:
+				status="block";
 	            break;
 			}
 			userDAO.changeStatus(idUser, status);

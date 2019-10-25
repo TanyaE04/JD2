@@ -1,6 +1,8 @@
 package by.it.rent.controller;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +34,10 @@ public class Controller extends HttpServlet {
 		if (request.getParameter(RequestParameterName.LOCAL) != null) {
 			request.getSession(true).setAttribute(RequestParameterName.LOCAL, request.getParameter(RequestParameterName.LOCAL));
 			String page = request.getParameter(RequestParameterName.PAGE);
+			if (page.equals(RequestParameterName.ADMIN)) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ADMIN_AUTH_PAGE);
+				dispatcher.forward(request, response);
+			} else
 			response.sendRedirect(page);
 			
 		} else {
