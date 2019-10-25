@@ -2,6 +2,7 @@
 	pageEncoding="utf-8"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"  %>  
+	<%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="mytag" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -98,14 +99,8 @@
 </div>
 	<table style="background: rgba(135, 206, 235, 0.5); text-align: left;">
 	<c:forEach var="car" items="${cars}" >
-        <tr>
-        	<td colspan="2"><c:out value="${car.brand} ${car.model}, ${car.color}, ${car.year} г.в., ${car.gearbox}"></c:out><br></td>
-        	<td></td>
-        </tr>
-        <tr>
-        	<td><b>Статус: </b><c:out value="${car.status}"></c:out></td> 
-        	<td><b>Цена за сутки: </b><c:out value=" ${car.price} "></c:out></td>
-        	<td>
+      <mytag:jspset car="${car}"/>
+      <td>
         	<c:if test="${not empty sessionScope.user}">
         		<form action="controller" method="post">
 					<input type="hidden" name="command" value="choosecar" />
