@@ -35,5 +35,12 @@ public class RequestParameterName {
 	public static final String COUNTS = "counts";
 	public static final String PAGE = "page";
 	public static final String ADMIN = "admin";
+	public static final String BRAND = "brand";
+	public static final String MODEL = "model";
+	public static final String YEAR = "year";
+	public static final String GEARBOX = "gearbox";
+	public static final String COLOR = "color";
+	public static final String PRICE = "price";
+	public static final String CAR_ClASS = "class";
 	
 }

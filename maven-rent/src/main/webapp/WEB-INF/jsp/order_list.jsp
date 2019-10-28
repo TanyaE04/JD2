@@ -58,10 +58,8 @@ table th {
 	</div>
 </div>
 <br>	
-<form action="controller" method="post">
-					<input type="hidden" name="command" value="addcar" />
-					<input type="hidden" name="idcar" value="${car.idCar}" />
-					<input type="submit" value="Создать новый заказ" />
+	<form action="add_order" method="get">
+		<button type="submit">Создать новый заказ</button>
 	</form>
 <br>
 <table>

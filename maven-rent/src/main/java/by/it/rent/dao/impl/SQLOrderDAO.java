@@ -85,6 +85,7 @@ public class SQLOrderDAO implements OrderDAO {
             result = prst.executeQuery();
             result.next();
             idOrder = result.getInt(1);
+            changeStatus (idOrder, null);
             connection.commit();
         } catch (SQLException | InterruptedException e) {
             try {
@@ -393,13 +394,13 @@ public class SQLOrderDAO implements OrderDAO {
 	}
 
 	@Override
-	public void changeStatus(int idOrder) throws DAOException {
+	public void changeStatus(int idOrder, String status) throws DAOException {
 		Connection connection = null;
         PreparedStatement prst = null;
         try {
             connection = pc.take();
             prst=connection.prepareStatement(UPDATE_STATUS);
-            prst.setString(1,"done");
+            prst.setString(1,status);
             prst.setInt(2,idOrder);
             prst.executeUpdate();
         } catch (SQLException e) {

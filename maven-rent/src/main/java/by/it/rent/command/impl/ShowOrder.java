@@ -31,7 +31,7 @@ public class ShowOrder implements Command {
 		
 		String pos = request.getParameter(RequestParameterName.PAGE_POSITION);
 		List <Order> orderList;
-
+		Order order = new Order ();
 		try {
 			orderList = orderService.showAllOrders();
 			int pages = (int) Math.ceil((orderList.size()/10.0));
@@ -43,8 +43,16 @@ public class ShowOrder implements Command {
 			if (pos!=null) {
 				int position = Integer.parseInt(pos);
 				int count = 10;
-				orderList = orderList.subList(position*count, (position+count));
+				int end = position*count+count;
+				if (end<orderList.size()-1) {
+					orderList = orderList.subList(position*count, end);
+				} else {
+					order = orderList.get(orderList.size()-1);
+					orderList = orderList.subList(position*count, orderList.size()-1);
+					orderList.add(order);
+				}
 			}
+			
 			request.setAttribute(RequestParameterName.ORDERS, orderList);
 			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.AD_ORDERS_PAGE);
 			dispatcher.forward(request, response);

@@ -30,6 +30,33 @@
     <url-pattern>/reg_form</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>adduser</servlet-name>
+     <jsp-file>/WEB-INF/jsp/add_user.jsp </jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>adduser</servlet-name>
+    <url-pattern>/add_user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>addcar</servlet-name>
+     <jsp-file>/WEB-INF/jsp/add_car.jsp </jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>addcar</servlet-name>
+    <url-pattern>/add_car</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>addorder</servlet-name>
+     <jsp-file>/WEB-INF/jsp/add_order.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>addorder</servlet-name>
+    <url-pattern>/add_order</url-pattern>
+  </servlet-mapping>
+  
   <filter>
   	<display-name>CharserFilter</display-name>
   	<filter-name>CharserFilter</filter-name>

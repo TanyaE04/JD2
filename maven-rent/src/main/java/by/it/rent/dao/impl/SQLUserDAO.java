@@ -403,6 +403,7 @@ public class SQLUserDAO implements UserDAO {
 		try {
 			connection = pc.take();
 			prst = connection.prepareStatement(UPDATE_USER);
+			connection.setAutoCommit(false);
 			prst.setString(1, user.getSurname());
 			prst.setString(2, user.getName());
 			prst.setString(3, user.getPhone());
@@ -422,7 +423,13 @@ public class SQLUserDAO implements UserDAO {
 			prst.setString(2, user.getPassport());
 			prst.setInt(3, user.getIdUser());
 			prst.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new DAOException (e1);
+			}
 			throw new DAOException("ERROR: update user", e);
 		} catch (InterruptedException e) {
 			throw new DAOException (e);

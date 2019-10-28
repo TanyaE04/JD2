@@ -3,6 +3,8 @@ package by.it.rent.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import by.it.rent.command.impl.AddCar;
+import by.it.rent.command.impl.AddOrder;
 import by.it.rent.command.impl.AuthorizationCommand;
 import by.it.rent.command.impl.BlockUser;
 import by.it.rent.command.impl.NoSuchCommand;
@@ -45,6 +47,8 @@ public class CommandHelper {
 		commands.put(CommandName.SEARCH, new Search ());
 		commands.put(CommandName.FILTER, new FilterSearch ());
 		commands.put(CommandName.COMPLETEORDER, new CompleteOrder ());
+		commands.put(CommandName.ADDCAR, new AddCar ());
+		commands.put(CommandName.ADDORDER, new AddOrder ());
 	}
 
 	public static CommandHelper getInstance() {

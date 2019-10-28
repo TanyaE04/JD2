@@ -50,9 +50,9 @@
 <input type="hidden" name="idcar" value="${infocar.idCar}" />
 <input type="hidden" name="iduser" value="${sessionScope.user.idUser}" />
 Дата начала аренды:<br>
-<input type="date" name="daterent" max="2019-01-01" value="2019-02-01" requered><br>
+<input type="date" name="daterent" min="2019-01-01" value="" placeholder="YYYY-MM-DD" requered><br>
 Дата предполагаемого возвращения:<br>
-<input type="date" name="datereturn" min="2025-12-31" requered><br><br>
+<input type="date" name="datereturn" max="2025-12-31" requered><br><br>
 			<c:if test="${empty sessionScope.user.passport}">
 			Введите серию и номер паспорта<input type="text" name="passport" placeholder="AA1234567" value="" requered><br>
 			Введите серию и номер водительских прав<input type="text" name="driverlicense" placeholder="0AA123456" value="" requered><br>

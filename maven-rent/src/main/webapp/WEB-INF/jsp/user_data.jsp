@@ -13,6 +13,7 @@
 
 <fmt:message bundle="${loc}" key="local.locbutton.ru" var="ru"/>
 <fmt:message bundle="${loc}" key="local.locbutton.en" var="en"/>
+<fmt:message bundle="${loc}" key="button.search" var="butsearch"/>
 </head>
 
 <body>
@@ -37,30 +38,33 @@
 	
 </div>
 <div class="search">
-<form>
-  <input  type="text" name="search" placeholder="Search..">
+	<form action="controller" method="post">
+		<input type="hidden" name="command" value="search" />
+  		<input  type="text" name="search" placeholder="${butsearch}...">
+  		<input  type="submit" value="${butsearch}"/></form>
 	</form>
-</div>
+</div>	
 	
 <c:if test="${sessionScope.user.idRole!=1}">
 <div class="leftcolumn">
-<h2>Фильтр</h2>
-Марка:<br>
-<form action="">
+<h2><fmt:message bundle="${loc}" key="page.filter"/></h2>
+<fmt:message bundle="${loc}" key="page.brand"/>:<br>
+<form action="controller" method="post">
+<input type="hidden" name="command" value="filter" />
 <input type="checkbox" name="volkswagen" value="Volkswagen">Volkswagen
 <br>
 <input type="checkbox" name="audi" value="Audi">Audi
 <br>
-<input type="checkbox" name="bwm" value="BWM">BWM
+<input type="checkbox" name="bmw" value="BMW">BMW
 <br>
 <input type="checkbox" name="skoda" value="Skoda">Skoda
 <br>
 <input type="checkbox" name="toyota" value="Toyota">Toyota
 <br><br>
-КПП:<br>
-  <input type="radio" name="akk" value="male" > АКПП<br>
-  <input type="radio" name="mkk" value="female"> МКПП<br><br>
-  <input type="submit" value="Найти">
+<fmt:message bundle="${loc}" key="page.gearbox" />:<br>
+  <input type="radio" name="gearbox" value="АКПП" ><fmt:message bundle="${loc}" key="page.ak" /><br>
+  <input type="radio" name="gearbox" value="МКПП"><fmt:message bundle="${loc}" key="page.mk" /><br><br>
+  <input type="submit" value="${butfind}">
 </form> 
 </div>
 </c:if>

@@ -52,9 +52,11 @@ public class OrderCar implements Command{
 		OrderService orderService = ServiceProvider.getInstance().getOrderService();
 		UserService userService = ServiceProvider.getInstance().getUserService();
 		CarService carService = ServiceProvider.getInstance().getCarService();
+		System.out.println("!!!!!!!!!!!!!!!!");
 		try {
 			int idRefusal=1;		
 			order=orderService.orderCar(newOrder, idRefusal);
+			System.out.println(11111);
 			if (passport != null && driverLicense !=null) {
 				userService.addDetails(passport, driverLicense, idUser);
 			}
@@ -65,6 +67,7 @@ public class OrderCar implements Command{
 				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_PAGE);
 				dispatcher.forward(request, response);
 			} else {
+				System.out.println(22222);
 				request.getSession(false).setAttribute(RequestParameterName.ORDER, order);
 				response.sendRedirect("controller?command=showcar");
 			}

@@ -66,10 +66,8 @@ table th {
 	</div>
 </div>	
 <br>
-	<form action="controller" method="post">
-					<input type="hidden" name="command" value="addcar" />
-					<input type="hidden" name="idcar" value="${car.idCar}" />
-					<input type="submit" value="Добавить новый автомобиль" />
+	<form action="add_car">
+		<button type="submit">Добавить новый автомобиль</button>
 	</form>
 
 <br>
@@ -80,6 +78,10 @@ table th {
   		<input  type="submit" value="${butsearch}"/></form>
 	</form>
 </div>	
+<c:if test="${not empty sessionScope.message}">
+		<fmt:message bundle="${loc}" key="${message}" /> <br>
+ 	</c:if>
+ <c:remove var = "message"/>
 <table>
 	<tr>
 		<th>Описание</th>

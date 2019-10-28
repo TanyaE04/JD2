@@ -23,13 +23,14 @@ import by.it.rent.dao.OrderDAO;
 public class CompleteOrder implements Command{
 	Logger log= LogManager.getLogger(CompleteOrder.class.getName());
 	private static final String FREE = "в наличии";
+	private static final String DONE = "done";
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		int idOrder = Integer.parseInt(request.getParameter(RequestParameterName.ID_ORDER));
 		OrderDAO orderDAO = DAOProvider.INSTANCE.getOrderDAO();
 		CarDAO carDAO = DAOProvider.INSTANCE.getCarDAO();
 		try {
-			orderDAO.changeStatus(idOrder);
+			orderDAO.changeStatus(idOrder, DONE);
 			carDAO.changeStatus(orderDAO.findOrder(idOrder).getIdCar(), FREE);
 			response.sendRedirect("controller?command=showorder");
 		} catch (DAOException e) {

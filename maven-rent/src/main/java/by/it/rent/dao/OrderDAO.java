@@ -15,6 +15,6 @@ public interface OrderDAO {
     void  addRefusal(int idRefusal, String [] cause);
 	List <Order> showAllOrders(int position, int count) throws DAOException;
 	List <Order> showUserOrders(int idUser) throws DAOException;
-	void changeStatus (int idOrder) throws DAOException;
+	void changeStatus (int idOrder, String status) throws DAOException;
 
 }

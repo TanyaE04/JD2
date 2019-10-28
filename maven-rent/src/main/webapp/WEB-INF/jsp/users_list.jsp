@@ -36,6 +36,7 @@ table th {
   background-color: #8000ff;
   color: white;
 }
+
 </style>
  <c:if test="${not empty sessionScope.user}">
     	<form action="controller" method="post">
@@ -60,10 +61,8 @@ table th {
 	</div>
 </div>
 <br>
-	<form action="controller" method="post">
-					<input type="hidden" name="command" value="adduser" />
-					<input type="hidden" name="iduser" value="${car.idUser}" />
-					<input type="submit" value="Добавить нового пользователя" />
+	<form action="add_user">
+		<button type="submit">Добавить нового пользователя</button>
 	</form>
 <br>
  <div class="main">

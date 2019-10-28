@@ -46,8 +46,8 @@ public class TestSQLUserDAO {
 	@Test
 	public void testRegistration() throws DAOException {
 		NewUser newUser = new NewUser ();
-		newUser.setName ("petya");
-		newUser.setSurname ("petrov");
+		newUser.setName ("aaaaa");
+		newUser.setSurname ("bbbbb");
 		newUser.setPhone ("8025-222-22-22");
 		newUser.setLogin ("petya");
 		newUser.setPassword ("1111");
@@ -69,7 +69,7 @@ public class TestSQLUserDAO {
 	public void testShowAllUsers() throws DAOException {
 		List <User> list = userDAO.showAllUsers();
 		int actual = list.size();
-		assertTrue (2==actual);
+		assertTrue (3==actual);
 	}
 
 	@Test
@@ -105,8 +105,8 @@ public class TestSQLUserDAO {
 	}
 
 
-	@Test (expected = DAOException.class)
-	public void testUpdateUserFail() throws DAOException {
+	@Test 
+	public void testUpdateUser() throws DAOException {
 		User user = new User ();
 		user.setIdUser(35);
 		user.setName ("david");
@@ -115,6 +115,8 @@ public class TestSQLUserDAO {
 		user.setMail ("p@mail.ru");
 		user.setAddress ("Galo, 20-20");
 		userDAO.updateUser(user);
+		User actual = userDAO.showUserById(35);
+		assertEquals ("david", actual.getName());
 	}
 
 	@Test
