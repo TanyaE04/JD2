@@ -39,7 +39,7 @@
 </div>	
 <c:if test="${empty requestScope.order}">
 <p> Информация о авто:<br>
-<c:out value="${infocar.brand} ${infocar.model}, ${infocar.color}, ${infocar.year} г.в., ${infocar.gearbox} "></c:out>
+<c:out value="${infocar.brand} ${infocar.model}, ${infocar.color}, ${infocar.year} г.в., ${infocar.gearbox}"></c:out>
 </p>
     <b style="color: red;"><c:if test="${not empty requestScope.message}">
 		<fmt:message bundle="${loc}" key="${message}" /> <br>

@@ -104,6 +104,17 @@
 				</form>
 			</td>
 			</c:if>
+			<c:if test="${order.status!='done'}">
+        	<td>
+        		<form action="controller" method="post">
+					<input type="hidden" name="command" value="deleteorder" />
+					<input type="hidden" name="page" value="controller?command=orderdata" />
+					<input type="hidden" name="idorder" value="${order.idOrder}" />
+					<input type="submit" value="Отменить заказ" />
+				</form>
+			</td>
+			</c:if>
+			
         	
        </tr>
        </c:forEach>

@@ -227,6 +227,7 @@ public class SQLUserDAO implements UserDAO {
 				user.setPhone(result.getString(5));
 				user.setMail(result.getString(8));
 				user.setAddress(result.getString(9));
+				user.setDebt(result.getDouble(10));
 				user.setDriverLicense(result.getString(11));
                 user.setPassport(result.getString(12));
                 user.setStatus(result.getString(15));

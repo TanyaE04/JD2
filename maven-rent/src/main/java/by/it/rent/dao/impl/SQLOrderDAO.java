@@ -29,9 +29,9 @@ public class SQLOrderDAO implements OrderDAO {
     private static final String INSERT_DAMAGE = "INSERT INTO damage VALUES (?, ?, ?)";
     private static final String SELECT_ORDER_BY_ID_TOTAL = "SELECT total FROM car_order WHERE id_order=?";
     private static final String SELECT_ORDER_BY_ID = "SELECT * FROM car_order WHERE id_order=?";
-    private static final String SELECT_ORDERS_BY_ID_USER = "SELECT * FROM car_order LEFT JOIN car on car_order.id_car=car.id_car LEFT JOIN damage on car_order.id_order=damage.id_order where id_users=?";
+    private static final String SELECT_ORDERS_BY_ID_USER = "SELECT * FROM car_order LEFT JOIN car on car_order.id_car=car.id_car LEFT JOIN damage on car_order.id_order=damage.id_order LEFT JOIN orderstatus on car_order.id_order=orderstatus.id_order where id_users=?";
     private static final String SELECT_ALL_ORDERS_DONE = "SELECT * FROM car_order LEFT JOIN orderstatus ON car_order.id_order=orderstatus.id_order WHERE car_order.date_return<current_date()";
-    private static final String SELECT_ALL_ORDERS = "SELECT * FROM car_order WHERE NOT car_order.date_return<current_date()";
+    private static final String SELECT_ALL_ORDERS = "SELECT * FROM car_order LEFT JOIN orderstatus ON car_order.id_order=orderstatus.id_order WHERE NOT car_order.date_return<current_date()";
     private static final String SELECT_ORDERS_LIMIT = "SELECT * FROM car_order LIMIT ?,?";
     private static final String SELECT_CAR_BY_IDCAR_PRICE = "SELECT price FROM car WHERE id_car=?";
     private static final String UPDATE_ORDER_TOTAL = "UPDATE car_order SET total=?";
@@ -261,6 +261,7 @@ public class SQLOrderDAO implements OrderDAO {
 		Connection connection = null;
         PreparedStatement prst = null;
         List <Order> list = new ArrayList <Order>();
+        String status = null;
         try {
             connection = pc.take();
             prst = connection.prepareStatement(SELECT_ALL_ORDERS_DONE);
@@ -277,8 +278,11 @@ public class SQLOrderDAO implements OrderDAO {
                 order.setIdRefusal(result.getInt(8));
                 order.setIdUsers (result.getInt(9));
                 if (result.getString(11)==null) {
-                	order.setStatus("undone");
+                	status="undone";
+                } else {
+                	status=result.getString(11);
                 }
+                order.setStatus (status);
                 list.add(order);
             }
             if (prst != null) {
@@ -301,6 +305,7 @@ public class SQLOrderDAO implements OrderDAO {
                 order.setTotal (result.getDouble(7));
                 order.setIdRefusal(result.getInt(8));
                 order.setIdUsers (result.getInt(9));
+                order.setStatus(result.getString(11));
                 list.add(order);}
         } catch (SQLException e) {
             throw new DAOException("ERROR: show all orders", e);
@@ -386,6 +391,7 @@ public class SQLOrderDAO implements OrderDAO {
                 order.setMarkCar(result.getString(11) + " "+ result.getString(12));
                 order.setDamage(result.getString(20));
                 order.setDamageSum(result.getDouble(21));
+                order.setStatus(result.getString(23));
                 list.add(order);
             }
         } catch (SQLException e) {

@@ -101,6 +101,7 @@
 </div>
 	<table style="background: rgba(135, 206, 235, 0.5); text-align: left;">
 	<c:forEach var="car" items="${cars}" >
+	<c:if test="${car.status != 'в ремонте' }">
       <mytag:jspset car="${car}"/>
       <td>
         	<c:if test="${not empty sessionScope.user}">
@@ -115,6 +116,7 @@
 			</td>
        </tr>
        <tr><td><br></td><td><br></td><td><br></td></tr>
+       </c:if>
     </c:forEach>
     </table>
     </div>

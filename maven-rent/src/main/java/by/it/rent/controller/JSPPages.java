@@ -13,5 +13,6 @@ public class JSPPages {
 	public static final String USER_DATA_PAGE = "/WEB-INF/jsp/user_data.jsp";
 	public static final String ORDER_DATA_PAGE = "/WEB-INF/jsp/order_data.jsp";
 	public static final String EDIT_USER_PAGE = "/WEB-INF/jsp/edit_user.jsp";
+	public static final String EDIT_ORDER_PAGE = "/WEB-INF/jsp/edit_order.jsp";
 	public static final String ERROR_PAGE = "/WEB-INF/jsp/error.jsp";
 }

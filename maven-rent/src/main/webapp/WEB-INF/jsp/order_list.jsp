@@ -86,17 +86,26 @@ table th {
         	<td><c:out value="${order.total}"></c:out><br>
         	<td><c:out value="${order.idRefusal}"></c:out><br>
         	<td><c:out value="${order.idUsers}"></c:out><br>
-        	<td><form action="controller" method="post">
+        	<td>
+        		<c:choose>
+        			<c:when test="${order.status eq 'deleted'}">
+        			Заказ удален
+        			</c:when>
+        			<c:otherwise>
+        		
+        		<form action="controller" method="post">
 					<input type="hidden" name="command" value="removeorder" />
 					<input type="hidden" name="idorder" value="${order.idOrder}" />
 					<input type="submit" value="Удалить" />
 				</form>
+				</c:otherwise>
+				</c:choose>
 				<form action="controller" method="post">
 					<input type="hidden" name="command" value="updateorder" />
 					<input type="hidden" name="idorder" value="${order.idOrder}" />
 					<input type="submit" value="Редактировать" />
 				</form>
-				<c:if test="${not empty order.status}">
+				<c:if test="${order.status eq 'undone'}">
 				<form action="controller" method="post">
 					<input type="hidden" name="command" value="completeorder" />
 					<input type="hidden" name="idorder" value="${order.idOrder}" />

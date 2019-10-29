@@ -83,7 +83,9 @@ table th {
 <th>Адрес</th>
 <th>Водителськое удостоверение</th>
 <th>Паспорт</th>
+<th>Задолженность</th>
 <th>Операции</th>
+
 </tr>
 	<c:forEach var="user" items="${users}" >
         <tr>
@@ -95,7 +97,7 @@ table th {
         	<td><c:out value="${user.address}"></c:out><br>
         	<td><c:out value="${user.driverLicense}"></c:out><br>
         	<td><c:out value="${user.passport}"></c:out><br>
-        	
+        	<td><c:if test="${user.debt!=0}"><c:out value="${user.debt}"></c:out></c:if></td>
         	<td>
         	<c:if test="${empty user.status}">
         		<form onsubmit="return myFunction()" action="controller" method="post">

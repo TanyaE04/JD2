@@ -39,6 +39,7 @@ public class OrderCar implements Command{
 		dateReturn = request.getParameter(RequestParameterName.DATE_RETURN);
 		passport = request.getParameter(RequestParameterName.PASSPORT);
 		driverLicense = request.getParameter(RequestParameterName.DRIVER_LICENSE);
+		System.out.println(request.getParameter(RequestParameterName.ID_CAR));
 		idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
 		idUser = Integer.parseInt(request.getParameter(RequestParameterName.ID_USER));
 				
@@ -52,6 +53,7 @@ public class OrderCar implements Command{
 		OrderService orderService = ServiceProvider.getInstance().getOrderService();
 		UserService userService = ServiceProvider.getInstance().getUserService();
 		CarService carService = ServiceProvider.getInstance().getCarService();
+		System.out.println(idCar);
 		try {
 			int idRefusal=1;		
 			order=orderService.orderCar(newOrder, idRefusal);
