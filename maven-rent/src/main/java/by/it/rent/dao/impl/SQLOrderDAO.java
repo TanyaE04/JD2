@@ -27,6 +27,7 @@ public class SQLOrderDAO implements OrderDAO {
     private static PoolConnection pc;
     private static final String INSERT_ORDER = "INSERT INTO car_order VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String INSERT_DAMAGE = "INSERT INTO damage VALUES (?, ?, ?)";
+    private static final String INSERT_STATUS = "INSERT INTO orderstatus VALUES (?, ?)";
     private static final String SELECT_ORDER_BY_ID_TOTAL = "SELECT total FROM car_order WHERE id_order=?";
     private static final String SELECT_ORDER_BY_ID = "SELECT * FROM car_order WHERE id_order=?";
     private static final String SELECT_ORDERS_BY_ID_USER = "SELECT * FROM car_order LEFT JOIN car on car_order.id_car=car.id_car LEFT JOIN damage on car_order.id_order=damage.id_order LEFT JOIN orderstatus on car_order.id_order=orderstatus.id_order where id_users=?";
@@ -34,7 +35,7 @@ public class SQLOrderDAO implements OrderDAO {
     private static final String SELECT_ALL_ORDERS = "SELECT * FROM car_order LEFT JOIN orderstatus ON car_order.id_order=orderstatus.id_order WHERE NOT car_order.date_return<current_date()";
     private static final String SELECT_ORDERS_LIMIT = "SELECT * FROM car_order LIMIT ?,?";
     private static final String SELECT_CAR_BY_IDCAR_PRICE = "SELECT price FROM car WHERE id_car=?";
-    private static final String UPDATE_ORDER_TOTAL = "UPDATE car_order SET total=?";
+    private static final String UPDATE_ORDER_TOTAL = "UPDATE car_order SET total=? WHERE id_order=?";
     private static final String UPDATE_ORDER = "UPDATE car_order SET date_rent=?, date_return=?, real_days=?, total=? WHERE id_order=?";
     private static final String UPDATE_STATUS = "UPDATE orderstatus SET status=? WHERE id_order=?";
     private static final String UPDATE_REFUSAL = "UPDATE car_order SET id_refusal=? WHERE (date_rent>current_date() AND id_car=?)";
@@ -87,7 +88,7 @@ public class SQLOrderDAO implements OrderDAO {
             result = prst.executeQuery();
             result.next();
             idOrder = result.getInt(1);
-            changeStatus (idOrder, null);
+            addStatus (idOrder, null);
             connection.commit();
         } catch (SQLException | InterruptedException e) {
             try {
@@ -131,6 +132,7 @@ public class SQLOrderDAO implements OrderDAO {
             }
             prst=connection.prepareStatement(UPDATE_ORDER_TOTAL);
             prst.setDouble(1,bill);
+            prst.setInt(2, idOrder);
             prst.executeUpdate();
         } catch (SQLException | InterruptedException e) {
             throw new DAOException("ERROR: order bill", e);
@@ -376,7 +378,7 @@ public class SQLOrderDAO implements OrderDAO {
             prst = connection.prepareStatement(SELECT_ORDERS_BY_ID_USER);
             prst.setInt(1, idUser );
             result = prst.executeQuery();
-            result.next();
+ 
             while (result.next()) {
                 Order order = new Order();
                 order.setIdOrder(result.getInt(1));
@@ -390,6 +392,7 @@ public class SQLOrderDAO implements OrderDAO {
                 order.setIdUsers (result.getInt(9));
                 order.setMarkCar(result.getString(11) + " "+ result.getString(12));
                 order.setDamage(result.getString(20));
+                System.out.println(result.getString(20));
                 order.setDamageSum(result.getDouble(21));
                 order.setStatus(result.getString(23));
                 list.add(order);
@@ -411,6 +414,31 @@ public class SQLOrderDAO implements OrderDAO {
         return list;
 	}
 
+	public void addStatus(int idOrder, String status) throws DAOException {
+		Connection connection = null;
+        PreparedStatement prst = null;
+        try {
+            connection = pc.take();
+            prst=connection.prepareStatement(INSERT_STATUS);
+            prst.setString(1,status);
+            prst.setInt(2,idOrder);
+            prst.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("ERROR: add order status", e);
+        } catch (InterruptedException e) {
+        	throw new DAOException (e);
+        } finally {
+            if (prst != null) {
+                try {
+                    prst.close();
+                } catch (SQLException e) {
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
+                }
+            }
+            pc.release(connection);
+        }
+	}
+	
 	@Override
 	public void changeStatus(int idOrder, String status) throws DAOException {
 		Connection connection = null;
@@ -446,11 +474,12 @@ public class SQLOrderDAO implements OrderDAO {
         PreparedStatement prst = null;
         try {
             connection = pc.take();
+            connection.setAutoCommit(false);
             prst = connection.prepareStatement(SELECT_CAR_BY_IDCAR_PRICE);
             prst.setInt(1, order.getIdCar());
             ResultSet res = prst.executeQuery();
             res.next();
-            int price = res.getInt(1);
+            double price = res.getDouble(1);
             double total = price*realDays + damage(order.getIdOrder());;
             if (prst != null) {
                 try {

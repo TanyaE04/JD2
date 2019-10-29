@@ -25,6 +25,7 @@ public class ImplOrderService implements OrderService {
 		String dateRent = newOrder.getDateRent();
 		try {
 			String status = carDAO.findCarByID(idCar).getStatus();
+			System.out.println(status);
 			if (validator.check(status, dateRent)) {
 				int idOrder = orderDAO.order(newOrder, idRefusal);
 				order = orderDAO.findOrder(idOrder);

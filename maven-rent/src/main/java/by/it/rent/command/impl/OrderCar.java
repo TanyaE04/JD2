@@ -39,6 +39,7 @@ public class OrderCar implements Command{
 		dateReturn = request.getParameter(RequestParameterName.DATE_RETURN);
 		passport = request.getParameter(RequestParameterName.PASSPORT);
 		driverLicense = request.getParameter(RequestParameterName.DRIVER_LICENSE);
+		System.out.println(1111111);
 		System.out.println(request.getParameter(RequestParameterName.ID_CAR));
 		idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
 		idUser = Integer.parseInt(request.getParameter(RequestParameterName.ID_USER));
@@ -67,6 +68,7 @@ public class OrderCar implements Command{
 				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_PAGE);
 				dispatcher.forward(request, response);
 			} else {
+				System.out.println(333);
 				request.getSession(false).setAttribute(RequestParameterName.ORDER, order);
 				response.sendRedirect("controller?command=showcar");
 			}

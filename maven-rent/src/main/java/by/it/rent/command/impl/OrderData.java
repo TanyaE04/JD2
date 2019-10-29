@@ -39,7 +39,8 @@ public class OrderData implements Command{
 			try {
 				orderList = orderDAO.showUserOrders(idUser);
 				request.setAttribute(RequestParameterName.ORDERS, orderList);
-
+System.out.println(orderList.get(0).getDamage());
+System.out.println(orderList.get(3).getDamage());
 				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_DATA_PAGE);
 				dispatcher.forward(request, response);
 			} catch (DAOException e) {

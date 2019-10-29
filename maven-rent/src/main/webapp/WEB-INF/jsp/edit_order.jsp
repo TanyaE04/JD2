@@ -65,10 +65,11 @@ table th {
 <h1>Редактировать заказ</h1>
 <c:out value="Номер заказа: ${order.idOrder}"></c:out>
 <c:out value="ID авто: ${order.idCar}"></c:out>
-<c:out value="ID пользователя: ${order.idUser}"></c:out>
+<c:out value="ID пользователя: ${order.idUsers}"></c:out>
 <form  action="controller" method="post">
 	<input type="hidden" name="command" value="editorder" />
 	<input type="hidden" name="idorder" value="${order.idOrder}" />
+	<input type="hidden" name="idcar" value="${order.idCar}" />
 	<table style="background: rgba(135, 206, 235, 0.5)">
        <tr>
             <td align="right" >Дата начала аренды:</td>
