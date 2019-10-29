@@ -15,4 +15,5 @@ public class JSPPages {
 	public static final String EDIT_USER_PAGE = "/WEB-INF/jsp/edit_user.jsp";
 	public static final String EDIT_ORDER_PAGE = "/WEB-INF/jsp/edit_order.jsp";
 	public static final String ERROR_PAGE = "/WEB-INF/jsp/error.jsp";
+	public static final String EDIT_CAR_PAGE = "/WEB-INF/jsp/edit_car.jsp";
 }

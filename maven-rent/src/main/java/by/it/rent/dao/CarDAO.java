@@ -11,4 +11,5 @@ public interface CarDAO {
     Car findCarByID (int idCar) throws DAOException;
     List<Car> findCar (String...search) throws DAOException;
     List<Car> showAllCars() throws DAOException; 
+    void changePrice (int idCar, double price) throws DAOException;
 }

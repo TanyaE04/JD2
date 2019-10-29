@@ -44,4 +44,6 @@ public class RequestParameterName {
 	public static final String CAR_ClASS = "class";
 	public static final String DESCRIPTION = "description";
 	public static final String SUM = "sum";
+	public static final String CAR = "car";
+	public static final String STATUS = "status";
 }

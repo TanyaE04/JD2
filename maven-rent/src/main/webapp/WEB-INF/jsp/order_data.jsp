@@ -79,11 +79,12 @@
        	
        </tr>
        <c:forEach var="order" items="${orders}" >
+       <c:if test="${order.status!='deleted'}">
        <tr>
         	<td><c:out value="${order.idOrder}"></c:out></td> 
         	<td><c:out value="${order.markCar}"></c:out></td> 
         	<td><c:out value="${order.dateRent}"></c:out></td> 
-        	<td><c:out value="${order.dateReturn}"></c:out><c:out value="${order.damage}"></c:out></td> 
+        	<td><c:out value="${order.dateReturn}"></c:out></td> 
         	<td><c:out value="${order.total}"></c:out>
         		<c:if test="${order.idRefusal==2}">
         		<p>Выбранное Вами авто в настоящее время находится в ремонте</p>
@@ -104,6 +105,7 @@
 			</td>
 			</c:if>
        </tr>
+       </c:if>
        </c:forEach>
       
     </table>

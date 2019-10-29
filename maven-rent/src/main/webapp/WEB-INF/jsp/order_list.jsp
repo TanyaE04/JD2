@@ -62,6 +62,12 @@ table th {
 		<button type="submit">Создать новый заказ</button>
 	</form>
 <br>
+<div class="message">
+ 	<c:if test="${not empty sessionScope.message}">
+		<fmt:message bundle="${loc}" key="${message}" /> <br>
+ 	</c:if>
+ <c:remove var = "message"/>
+</div>
 <table>
 <tr>
 <th>ID заказа</th>

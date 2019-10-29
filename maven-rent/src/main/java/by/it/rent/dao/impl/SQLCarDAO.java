@@ -25,8 +25,8 @@ public class SQLCarDAO implements CarDAO {
     private static final String SELECT_CAR_BY_SEARCH= "SELECT * FROM car WHERE (concat (brand, model, year, gearbox, color, status)  like ? and  concat (brand, model, year, gearbox, color, status)  like ?);";
     private static final String SELECT_CAR_BY_ID= "SELECT * FROM car WHERE id_car=?";
     private static final String SELECT_ALL_CARS= "SELECT * FROM car";
-    //private static final String SELECT_CLASS_BY_ID ="SELECT class FROM class WHERE id_class=?";
     private static final String UPDATE_CAR_STATUS="UPDATE car SET status=? WHERE id_car=?";
+    private static final String UPDATE_CAR_PRICE="UPDATE car SET price=? WHERE id_car=?";
 
     static {
         try {
@@ -224,5 +224,34 @@ public class SQLCarDAO implements CarDAO {
         }
         return car;
     }
+
+	@Override
+	public void changePrice(int idCar, double price) throws DAOException {
+		Connection connection = null;
+        PreparedStatement prst = null;
+        try {
+            connection = pc.take();
+            prst = connection.prepareStatement(UPDATE_CAR_STATUS);
+            prst.setDouble(1, price);
+            prst.setInt(2,idCar);
+            prst.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("ERROR: change car's price", e);
+        } catch (InterruptedException e) {
+        	throw new DAOException(e);
+        } finally {
+            if (prst != null) {
+                try {
+                    prst.close();
+                } catch (SQLException e) {
+                	log.debug("This is a DEBUG-message in SQLCarDAO");
+                }
+            }
+            pc.release(connection);
+        }
+		
+	}
+
+	
 	
 }

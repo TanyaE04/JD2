@@ -378,7 +378,6 @@ public class SQLOrderDAO implements OrderDAO {
             prst = connection.prepareStatement(SELECT_ORDERS_BY_ID_USER);
             prst.setInt(1, idUser );
             result = prst.executeQuery();
-            result.next();
             while (result.next()) {
                 Order order = new Order();
                 order.setIdOrder(result.getInt(1));

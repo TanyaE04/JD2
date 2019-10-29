@@ -78,10 +78,12 @@ table th {
   		<input  type="submit" value="${butsearch}"/></form>
 	</form>
 </div>	
+<div class="message">
 <c:if test="${not empty sessionScope.message}">
 		<fmt:message bundle="${loc}" key="${message}" /> <br>
  	</c:if>
  <c:remove var = "message"/>
+ </div>
 <table>
 	<tr>
 		<th>Описание</th>
