@@ -14,33 +14,37 @@ import by.it.rent.bean.Order;
 import by.it.rent.command.Command;
 import by.it.rent.controller.JSPPages;
 import by.it.rent.controller.RequestParameterName;
-import by.it.rent.dao.CarDAO;
 import by.it.rent.dao.DAOException;
 import by.it.rent.dao.DAOProvider;
 import by.it.rent.dao.OrderDAO;
-import by.it.rent.dao.UserDAO;
 
-
-public class CompleteOrder implements Command{
-	Logger log= LogManager.getLogger(CompleteOrder.class.getName());
-	private static final String FREE = "в наличии";
-	private static final String DONE = "done";
+public class EditOrder implements Command{
+	Logger log = LogManager.getLogger(EditOrder.class.getName());
+	private static final String EDIT_MESSAGE = "message.edit.save";
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		int idOrder = Integer.parseInt(request.getParameter(RequestParameterName.ID_ORDER));
+		
+		String dateRent;
+		String dateReturn;
+		int idOrder;
+		
+		dateRent = request.getParameter(RequestParameterName.DATE_RENT);
+		dateReturn = request.getParameter(RequestParameterName.DATE_RETURN);
+		idOrder = Integer.parseInt(request.getParameter(RequestParameterName.ID_ORDER));
+		
+		Order order = new Order ();
+		order.setDateRent(dateRent);
+		order.setDateReturn(dateReturn);
+		order.setIdOrder(idOrder);
+		
 		OrderDAO orderDAO = DAOProvider.INSTANCE.getOrderDAO();
-		CarDAO carDAO = DAOProvider.INSTANCE.getCarDAO();
-		UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
 		try {
-			int idUser = orderDAO.findOrder(idOrder).getIdUsers();
-			orderDAO.changeStatus(idOrder, DONE);
-			double damage = orderDAO.damage(idOrder);
-			if (damage==0) {
-				carDAO.changeStatus(orderDAO.findOrder(idOrder).getIdCar(), FREE);}
-			userDAO.changeDebt(idUser, orderDAO.bill(idOrder, damage));
+			orderDAO.updateOrder(order);
+			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
 			response.sendRedirect("controller?command=showorder");
-		} catch (DAOException e) {
-			log.debug("This is a DEBUG-message in CompleteOrder");
+		} catch(DAOException e) {
+			log.debug("This is a DEBUG-message in EditOrder");
 			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
 			dispatcher.forward(request, response);
 		}

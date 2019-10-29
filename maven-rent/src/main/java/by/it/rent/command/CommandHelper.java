@@ -12,6 +12,8 @@ import by.it.rent.command.impl.OrderCar;
 import by.it.rent.command.impl.OrderData;
 import by.it.rent.command.impl.ChooseCar;
 import by.it.rent.command.impl.CompleteOrder;
+import by.it.rent.command.impl.Damage;
+import by.it.rent.command.impl.EditOrder;
 import by.it.rent.command.impl.EditUser;
 import by.it.rent.command.impl.FilterSearch;
 import by.it.rent.command.impl.LogOut;
@@ -49,6 +51,8 @@ public class CommandHelper {
 		commands.put(CommandName.COMPLETEORDER, new CompleteOrder ());
 		commands.put(CommandName.ADDCAR, new AddCar ());
 		commands.put(CommandName.ADDORDER, new AddOrder ());
+		commands.put(CommandName.EDITORDER, new EditOrder ());
+		commands.put(CommandName.DAMAGE, new Damage ());
 	}
 
 	public static CommandHelper getInstance() {

@@ -26,6 +26,7 @@ public class SQLOrderDAO implements OrderDAO {
 	Logger log= LogManager.getLogger(SQLOrderDAO.class.getName());
     private static PoolConnection pc;
     private static final String INSERT_ORDER = "INSERT INTO car_order VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_DAMAGE = "INSERT INTO damage VALUES (?, ?, ?)";
     private static final String SELECT_ORDER_BY_ID_TOTAL = "SELECT total FROM car_order WHERE id_order=?";
     private static final String SELECT_ORDER_BY_ID = "SELECT * FROM car_order WHERE id_order=?";
     private static final String SELECT_ORDERS_BY_ID_USER = "SELECT * FROM car_order LEFT JOIN car on car_order.id_car=car.id_car LEFT JOIN damage on car_order.id_order=damage.id_order where id_users=?";
@@ -33,9 +34,10 @@ public class SQLOrderDAO implements OrderDAO {
     private static final String SELECT_ALL_ORDERS = "SELECT * FROM car_order WHERE NOT car_order.date_return<current_date()";
     private static final String SELECT_ORDERS_LIMIT = "SELECT * FROM car_order LIMIT ?,?";
     private static final String SELECT_CAR_BY_IDCAR_PRICE = "SELECT price FROM car WHERE id_car=?";
-    private static final String UPDATE_ORDER_DAYS = "UPDATE car_order SET real_days=?";
     private static final String UPDATE_ORDER_TOTAL = "UPDATE car_order SET total=?";
+    private static final String UPDATE_ORDER = "UPDATE car_order SET date_rent=?, date_return=?, real_days=?, total=? WHERE id_order=?";
     private static final String UPDATE_STATUS = "UPDATE orderstatus SET status=? WHERE id_order=?";
+    private static final String UPDATE_REFUSAL = "UPDATE car_order SET id_refusal=? WHERE (date_rent>current_date() AND id_car=?)";
     private static final String SELECT_DAMAGE_BY_IDORDER_SUM = "SELECT sum FROM damage WHERE id_order=?";
 
     static {
@@ -108,7 +110,7 @@ public class SQLOrderDAO implements OrderDAO {
     }
 
     @Override
-    public double bill(int idOrder, int realDays) throws DAOException {
+    public double bill(int idOrder, double damage) throws DAOException {
         Connection connection = null;
         PreparedStatement prst = null;
         double bill = 0;
@@ -118,30 +120,8 @@ public class SQLOrderDAO implements OrderDAO {
             prst.setInt(1, idOrder);
             ResultSet result = prst.executeQuery();
             result.next();
-            int idCar = result.getInt("id_car");
-            if (prst != null) {
-                try {
-                    prst.close();
-                } catch (SQLException e) {
-                    throw new DAOException(e);
-                }
-            }
-            prst = connection.prepareStatement(SELECT_CAR_BY_IDCAR_PRICE);
-            prst.setInt(1, idCar);
-            ResultSet res = prst.executeQuery();
-            result.next();
-            double price = res.getDouble("price");
-            bill = (price * realDays) + damage(idOrder);
-            if (prst != null) {
-                try {
-                    prst.close();
-                } catch (SQLException e) {
-                	throw new DAOException (e);
-                }
-            }
-            prst=connection.prepareStatement(UPDATE_ORDER_DAYS);
-            prst.setInt(1,realDays);
-            prst.executeUpdate();
+            int total = result.getInt(1);
+            bill = total + damage;
             if (prst != null) {
                 try {
                     prst.close();
@@ -168,6 +148,38 @@ public class SQLOrderDAO implements OrderDAO {
     }
 
     @Override
+	public void addDamage(int idOrder, String description, double sum) throws DAOException {
+    	Connection connection = null;
+        PreparedStatement prst = null;
+        try {
+            connection = pc.take();
+            connection.setAutoCommit(false);
+            prst = connection.prepareStatement(INSERT_DAMAGE);
+            prst.setInt(1, idOrder);
+            prst.setString(2, description);
+            prst.setDouble(3, sum);
+            prst.executeUpdate();
+            connection.commit();
+        } catch (SQLException | InterruptedException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new DAOException (ex);
+            }
+            throw new DAOException("ERROR: add damage", e);
+        } finally {
+            if (prst != null) {
+                try {
+                    prst.close();
+                } catch (SQLException e) {
+                	log.debug("This is a DEBUG-message in SQLOrderDAO");
+                }
+            }
+            pc.release(connection);
+        }		
+	}
+    
+    @Override
     public double damage(int idOrder) throws DAOException {
         Connection connection = null;
         PreparedStatement prst = null;
@@ -180,7 +192,7 @@ public class SQLOrderDAO implements OrderDAO {
             if(result.next()){
             sum = result.getDouble("sum");}
         } catch (SQLException | InterruptedException e) {
-            throw new DAOException("ERROR: add damage", e);
+            throw new DAOException("ERROR: get sum damage", e);
         } finally {
             if (prst != null) {
                 try {
@@ -418,4 +430,92 @@ public class SQLOrderDAO implements OrderDAO {
             pc.release(connection);
         }
 	}
+
+	@Override
+	public void updateOrder(Order order) throws DAOException {
+		String dateRent = order.getDateRent();
+		String dateReturn = order.getDateReturn();
+		int realDays = countDays (dateRent, dateReturn);
+		Connection connection = null;
+        PreparedStatement prst = null;
+        try {
+            connection = pc.take();
+            prst = connection.prepareStatement(SELECT_CAR_BY_IDCAR_PRICE);
+            prst.setInt(1, order.getIdCar());
+            ResultSet res = prst.executeQuery();
+            res.next();
+            int price = res.getInt(1);
+            double total = price*realDays + damage(order.getIdOrder());;
+            if (prst != null) {
+                try {
+                    prst.close();
+                } catch (SQLException e) {
+                	throw new DAOException (e);
+                }
+            }
+            connection.setAutoCommit(false);
+            prst=connection.prepareStatement(UPDATE_ORDER);
+            prst.setInt(5, order.getIdOrder());
+            prst.setString(1, dateRent);
+			prst.setString(2, dateReturn);
+			prst.setInt(3, realDays);
+			prst.setDouble(4, total);
+			prst.executeUpdate();
+			connection.commit();
+        }catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new DAOException (e1);
+			}
+			throw new DAOException("ERROR: update order", e);
+		} catch (InterruptedException e) {
+			throw new DAOException (e);
+		} finally {
+			if (prst != null) {
+				try {
+					prst.close();
+				} catch (SQLException e) {
+					log.debug("This is a DEBUG-message in SQLOrderDAO");
+				}
+			}
+			pc.release(connection);
+		}
+	}
+
+	@Override
+	public void changeRefusal(int idCar, int idRefusal) throws DAOException {
+		Connection connection = null;
+        PreparedStatement prst = null;
+        try {
+            connection = pc.take();
+            connection.setAutoCommit(false);
+            prst=connection.prepareStatement(UPDATE_REFUSAL);
+            prst.setInt(2, idCar);
+			prst.setInt(1, idRefusal);
+			prst.executeUpdate();
+			connection.commit();
+        }catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new DAOException (e1);
+			}
+			throw new DAOException("ERROR: change refusal", e);
+		} catch (InterruptedException e) {
+			throw new DAOException (e);
+		} finally {
+			if (prst != null) {
+				try {
+					prst.close();
+				} catch (SQLException e) {
+					log.debug("This is a DEBUG-message in SQLOrderDAO");
+				}
+			}
+			pc.release(connection);
+		}
+
+	}
+
+	
 }

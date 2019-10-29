@@ -76,4 +76,6 @@ public interface UserDAO {
      * @throws DAOException
      */
     void changeStatus(int idUser, String status) throws DAOException;
+    
+    void changeDebt (int idUser, double bill) throws DAOException;
 }

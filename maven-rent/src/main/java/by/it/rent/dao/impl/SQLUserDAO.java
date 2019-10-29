@@ -25,11 +25,12 @@ public class SQLUserDAO implements UserDAO {
 	private static final String SELECT_USERS_BY_ID = "SELECT * FROM users LEFT JOIN userstatus ON users.id_user=userstatus.id_user WHERE users.id_user=?";
 	private static final String SELECT_ALL_USERS = "SELECT * FROM users LEFT JOIN details ON users.id_user=details.id_user LEFT JOIN userstatus ON users.id_user=userstatus.id_user";
 	private static final String SELECT_DETAILS_BY_IDUSER = "SELECT driver_license, passport FROM details WHERE id_user=?";
-	private static final String INSERT_USERS = "INSERT INTO users VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_USERS = "INSERT INTO users VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, '0')";
 	private static final String INSERT_DETAILS = "INSERT INTO details VALUES (?, ?, ?)";
 	private static final String INSERT_USER_STATUS = "INSERT INTO userstatus VALUES (?, ?)";
 	private static final String UPDATE_USERS_ROLE = "UPDATE users SET id_role=? WHERE id_user=?";
 	private static final String UPDATE_USERS_STATUS = "UPDATE userstatus SET status=? WHERE id_user=?";
+	private static final String UPDATE_USERS_DEBT = "UPDATE users SET debt=? WHERE id_user=?";
 	private static final String UPDATE_USER = "UPDATE users SET surname=?, name=?, phone_number=?, mail=?, adress=? WHERE id_user=?";
 	private static final String UPDATE_DETAILS = "UPDATE details SET driver_license=?, passport=? WHERE id_user=?";
 	private static final String ADMIN = "Администратор";
@@ -63,7 +64,8 @@ public class SQLUserDAO implements UserDAO {
 				user.setIdRole(rs.getInt(2));
 				user.setSurname(rs.getString(3));
 				user.setName(rs.getString(4));
-				user.setStatus(rs.getString(11));
+				user.setDebt(rs.getDouble(10));
+				user.setStatus(rs.getString(12));
 				if (prst != null) {
 					try {
 						prst.close();
@@ -225,9 +227,9 @@ public class SQLUserDAO implements UserDAO {
 				user.setPhone(result.getString(5));
 				user.setMail(result.getString(8));
 				user.setAddress(result.getString(9));
-				user.setDriverLicense(result.getString(10));
-                user.setPassport(result.getString(11));
-                user.setStatus(result.getString(14));
+				user.setDriverLicense(result.getString(11));
+                user.setPassport(result.getString(12));
+                user.setStatus(result.getString(15));
 				list.add(user);
 			}
 		} catch (SQLException e) {
@@ -296,7 +298,8 @@ public class SQLUserDAO implements UserDAO {
 				user.setPhone(rs.getString(5));
 				user.setMail(rs.getString(8));
 				user.setAddress (rs.getString(9));
-				user.setStatus(rs.getString(11));
+				user.setDebt(rs.getDouble(10));
+				user.setStatus(rs.getString(12));
 				if (prst != null) {
 					try {
 						prst.close();
@@ -402,8 +405,8 @@ public class SQLUserDAO implements UserDAO {
 		PreparedStatement prst = null;
 		try {
 			connection = pc.take();
-			prst = connection.prepareStatement(UPDATE_USER);
 			connection.setAutoCommit(false);
+			prst = connection.prepareStatement(UPDATE_USER);
 			prst.setString(1, user.getSurname());
 			prst.setString(2, user.getName());
 			prst.setString(3, user.getPhone());
@@ -469,6 +472,33 @@ public class SQLUserDAO implements UserDAO {
 			}
 			pc.release(connection);
 		}
+	}
+
+	@Override
+	public void changeDebt(int idUser, double bill) throws DAOException {
+		Connection connection = null;
+		PreparedStatement prst = null;
+		try {
+			connection = pc.take();
+			prst = connection.prepareStatement(UPDATE_USERS_DEBT);
+			prst.setInt(2, idUser);
+			prst.setDouble(1, bill);
+			prst.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException("ERROR: change user debt", e);
+		} catch (InterruptedException e) {
+			throw new DAOException (e);
+		} finally {
+			if (prst != null) {
+				try {
+					prst.close();
+				} catch (SQLException e) {
+					log.debug("This is a DEBUG-message in SQLUserDAO");
+				}
+			}
+			pc.release(connection);
+		}
+		
 	}	
 		
 

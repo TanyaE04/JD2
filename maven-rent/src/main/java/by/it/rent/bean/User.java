@@ -15,12 +15,16 @@ public class User {
 	    private String driverLicense;
 	    private String passport;
 	    private String status;
+	    private double debt;
 
 	    @Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + ((address == null) ? 0 : address.hashCode());
+			long temp;
+			temp = Double.doubleToLongBits(debt);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
 			result = prime * result + ((driverLicense == null) ? 0 : driverLicense.hashCode());
 			result = prime * result + idRole;
 			result = prime * result + idUser;
@@ -29,6 +33,7 @@ public class User {
 			result = prime * result + ((passport == null) ? 0 : passport.hashCode());
 			result = prime * result + ((phone == null) ? 0 : phone.hashCode());
 			result = prime * result + ((roleName == null) ? 0 : roleName.hashCode());
+			result = prime * result + ((status == null) ? 0 : status.hashCode());
 			result = prime * result + ((surname == null) ? 0 : surname.hashCode());
 			return result;
 		}
@@ -46,6 +51,8 @@ public class User {
 				if (other.address != null)
 					return false;
 			} else if (!address.equals(other.address))
+				return false;
+			if (Double.doubleToLongBits(debt) != Double.doubleToLongBits(other.debt))
 				return false;
 			if (driverLicense == null) {
 				if (other.driverLicense != null)
@@ -81,6 +88,11 @@ public class User {
 					return false;
 			} else if (!roleName.equals(other.roleName))
 				return false;
+			if (status == null) {
+				if (other.status != null)
+					return false;
+			} else if (!status.equals(other.status))
+				return false;
 			if (surname == null) {
 				if (other.surname != null)
 					return false;
@@ -93,7 +105,8 @@ public class User {
 		public String toString() {
 			return "User [idUser=" + idUser + ", idRole=" + idRole + ", surname=" + surname + ", name=" + name
 					+ ", phone=" + phone + ", mail=" + mail + ", address=" + address + ", roleName=" + roleName
-					+ ", driverLicense=" + driverLicense + ", passport=" + passport + "]";
+					+ ", driverLicense=" + driverLicense + ", passport=" + passport + ", status=" + status + ", debt="
+					+ debt + "]";
 		}
 
 		public User() {
@@ -186,6 +199,14 @@ public class User {
 
 		public void setStatus(String status) {
 			this.status = status;
+		}
+
+		public double getDebt() {
+			return debt;
+		}
+
+		public void setDebt(double debt) {
+			this.debt = debt;
 		}
 
 }

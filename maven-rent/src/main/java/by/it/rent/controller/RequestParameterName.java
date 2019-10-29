@@ -42,5 +42,6 @@ public class RequestParameterName {
 	public static final String COLOR = "color";
 	public static final String PRICE = "price";
 	public static final String CAR_ClASS = "class";
-	
+	public static final String DESCRIPTION = "description";
+	public static final String SUM = "sum";
 }

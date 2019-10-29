@@ -31,7 +31,9 @@
     <c:if test="${empty sessionScope.user}">
 		<h1><fmt:message bundle="${loc}" key="welcome.message.order"/> - <a href="index.jsp"><fmt:message bundle="${loc}" key="welcome.message.need"/></a>, <fmt:message bundle="${loc}" key="welcome.message.please"/></h1>
 	</c:if>
-
+	<c:if test="${sessionScope.user.debt>0}">
+		<h1 style="color: red;">У Вас задолженность</h1>
+	</c:if>
 	
  <div class="topnav">
  <a href="index.jsp"><fmt:message bundle="${loc}" key="local.href.tomain"/></a>
@@ -102,11 +104,13 @@
       <mytag:jspset car="${car}"/>
       <td>
         	<c:if test="${not empty sessionScope.user}">
+        		<c:if test="${sessionScope.user.debt==0}">
         		<form action="controller" method="post">
 					<input type="hidden" name="command" value="choosecar" />
 					<input type="hidden" name="idcar" value="${car.idCar}" />
 					<input type="submit" value="${butorder}" />
 				</form>
+				</c:if>
 			</c:if>
 			</td>
        </tr>
