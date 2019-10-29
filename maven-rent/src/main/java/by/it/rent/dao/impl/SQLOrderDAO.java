@@ -378,7 +378,7 @@ public class SQLOrderDAO implements OrderDAO {
             prst = connection.prepareStatement(SELECT_ORDERS_BY_ID_USER);
             prst.setInt(1, idUser );
             result = prst.executeQuery();
- 
+            result.next();
             while (result.next()) {
                 Order order = new Order();
                 order.setIdOrder(result.getInt(1));
@@ -392,7 +392,6 @@ public class SQLOrderDAO implements OrderDAO {
                 order.setIdUsers (result.getInt(9));
                 order.setMarkCar(result.getString(11) + " "+ result.getString(12));
                 order.setDamage(result.getString(20));
-                System.out.println(result.getString(20));
                 order.setDamageSum(result.getDouble(21));
                 order.setStatus(result.getString(23));
                 list.add(order);
