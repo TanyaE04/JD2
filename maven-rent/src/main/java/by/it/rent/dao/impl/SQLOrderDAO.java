@@ -84,12 +84,19 @@ public class SQLOrderDAO implements OrderDAO {
             prst.setInt(7, idRefusal );
             prst.setInt(8, newOrder.getIdUsers());
             prst.executeUpdate();
+            if (prst != null) {
+                try {
+                    prst.close();
+                } catch (SQLException e) {
+                    throw new DAOException (e);
+                }
+            }
             prst = connection.prepareStatement("SELECT LAST_INSERT_ID()");
             result = prst.executeQuery();
             result.next();
             idOrder = result.getInt(1);
-            addStatus (idOrder, null);
             connection.commit();
+            addStatus (idOrder, null);
         } catch (SQLException | InterruptedException e) {
             try {
                 connection.rollback();
@@ -418,8 +425,8 @@ public class SQLOrderDAO implements OrderDAO {
         try {
             connection = pc.take();
             prst=connection.prepareStatement(INSERT_STATUS);
-            prst.setString(1,status);
-            prst.setInt(2,idOrder);
+            prst.setInt(1,idOrder);
+            prst.setString(2,status);
             prst.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("ERROR: add order status", e);

@@ -24,24 +24,25 @@ public class UserData implements Command{
 	Logger log = LogManager.getLogger(UserData.class.getName());
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-		int idUser;
-        HttpSession session = request.getSession(false);
-        User u = (User) session.getAttribute(RequestParameterName.USER);
-        idUser = u.getIdUser();
-		UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
-		User user = new User();
-			try {
-				user = userDAO.showUserById(idUser);
-				request.setAttribute(RequestParameterName.USER, user);	
-				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.USER_DATA_PAGE);
-				dispatcher.forward(request, response);
-			} catch (DAOException e) {
-				log.debug("This is a DEBUG-message in UserData");
-				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
-				dispatcher.forward(request, response);
-			}
-			
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			int idUser;
+            User u = (User) session.getAttribute(RequestParameterName.USER);
+            idUser = u.getIdUser();
+            UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
+            User user = new User();
+				try {
+					user = userDAO.showUserById(idUser);
+					request.setAttribute(RequestParameterName.USER, user);	
+					RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.USER_DATA_PAGE);
+					dispatcher.forward(request, response);
+				} catch (DAOException e) {
+					log.debug("This is a DEBUG-message in UserData");
+					RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+					dispatcher.forward(request, response);
+				}
+		} else
+			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
 
 }

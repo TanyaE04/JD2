@@ -14,6 +14,10 @@
 <fmt:message bundle="${loc}" key="local.locbutton.ru" var="ru"/>
 <fmt:message bundle="${loc}" key="local.locbutton.en" var="en"/>
 <fmt:message bundle="${loc}" key="button.search" var="butsearch"/>
+<fmt:message bundle="${loc}" key="button.order" var="butorder"/>
+<fmt:message bundle="${loc}" key="button.find" var="butfind"/>
+<fmt:message bundle="${loc}" key="button.logout" var="butlogout"/>
+<fmt:message bundle="${loc}" key="button.back" var="butback"/>
 </head>
 
 <body>
@@ -44,7 +48,6 @@
   		<input  type="submit" value="${butsearch}"/></form>
 	</form>
 </div>	
-	
 <c:if test="${sessionScope.user.idRole!=1}">
 <div class="leftcolumn">
 <h2><fmt:message bundle="${loc}" key="page.filter"/></h2>

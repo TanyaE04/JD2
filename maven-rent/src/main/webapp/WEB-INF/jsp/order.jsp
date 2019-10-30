@@ -45,22 +45,23 @@
 		<fmt:message bundle="${loc}" key="${message}" /> <br>
  	</c:if></b>
   <c:remove var = "messageAlreadyRent"/>
+  
 <form name="orderForm" onsubmit="return myFunction()" action="controller" method="post">
-<input type="hidden" name="command" value="ordercar" />
-<input type="hidden" name="idcar" value="${infocar.idCar}" />
-<c:out value="${infocar.idCar}"></c:out>
-<input type="hidden" name="iduser" value="${sessionScope.user.idUser}" />
-Дата начала аренды:<br>
-<input type="date" name="daterent" min="2019-01-01" value="" placeholder="YYYY-MM-DD" requered><br>
-Дата предполагаемого возвращения:<br>
-<input type="date" name="datereturn" max="2025-12-31" value="" requered><br><br>
+	<input type="hidden" name="command" value="ordercar" />
+	<input type="hidden" name="idcar" value="${infocar.idCar}" />
+	<input type="hidden" name="iduser" value="${sessionScope.user.idUser}" />
+	Дата начала аренды:<br>
+	<input type="date" name="daterent" min="2019-01-01" value="" placeholder="YYYY-MM-DD" requered><br>
+	Дата предполагаемого возвращения:<br>
+	<input type="date" name="datereturn" max="2025-12-31" value="" requered><br><br>
 			<c:if test="${empty sessionScope.user.passport}">
 			Введите серию и номер паспорта<input type="text" name="passport" placeholder="AA1234567" value="" requered><br>
 			Введите серию и номер водительских прав<input type="text" name="driverlicense" placeholder="0AA123456" value="" requered><br>
 			</c:if>
-<input type="reset">
-<input type="submit" value="Оформить аренду"> 
+	<input type="reset">
+	<input type="submit" value="Оформить аренду"> 
 </form>
+
 <input type="button" onclick="history.back();" value="Назад"/>
 </c:if>
 
@@ -73,7 +74,7 @@ function myFunction() {
   var datenow = new Date (now.getFullYear () + '-' + (now.getMonth () + 1) + '-' + now.getDate ());
   var rent = new Date (dateRent);
   var dreturn = new Date (dateReturn);
-  if ((rent<now) && (dreturn<=now)){
+  if ((rent<datenow) || (dreturn<=datenow)){
 	  alert ("Не верно выбраны даты")
 	  return false;
   } 

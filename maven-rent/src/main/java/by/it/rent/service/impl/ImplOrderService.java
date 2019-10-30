@@ -32,6 +32,7 @@ public class ImplOrderService implements OrderService {
 				status = RENT + " до " + order.getDateReturn();
 				carDAO.changeStatus(idCar, status);
 			} else {
+				System.out.println(1111);
 				order = null;
 			}
 		} catch (DAOException e) {

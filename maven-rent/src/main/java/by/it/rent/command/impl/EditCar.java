@@ -6,6 +6,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,31 +25,34 @@ public class EditCar implements Command{
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			int idCar;
+			double price;
+			String status;
 		
-		int idCar;
-		double price;
-		String status;
-		
-		idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
-		price=Double.parseDouble(request.getParameter(RequestParameterName.PRICE));
-		status=request.getParameter(RequestParameterName.STATUS);
-		OrderDAO orderDAO = DAOProvider.INSTANCE.getOrderDAO();
-		CarDAO carDAO = DAOProvider.INSTANCE.getCarDAO();
-		try {
-			if (price!=0) {
-				carDAO.changePrice(idCar, price);
+			idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
+			price=Double.parseDouble(request.getParameter(RequestParameterName.PRICE));
+			status=request.getParameter(RequestParameterName.STATUS);
+			OrderDAO orderDAO = DAOProvider.INSTANCE.getOrderDAO();
+			CarDAO carDAO = DAOProvider.INSTANCE.getCarDAO();
+			try {
+				if (price!=0) {
+					carDAO.changePrice(idCar, price);
+				}
+				if (status!=null) {
+					carDAO.changeStatus(idCar, status);
+					orderDAO.changeRefusal(idCar, 1);
+				}
+				session.setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
+				response.sendRedirect("controller?command=showcar");
+			} catch(DAOException e) {
+				log.debug("This is a DEBUG-message in EditOrder", e);
+				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+				dispatcher.forward(request, response);
 			}
-			if (status!=null) {
-				carDAO.changeStatus(idCar, status);
-				orderDAO.changeRefusal(idCar, 1);
-			}
-			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
-			response.sendRedirect("controller?command=showcar");
-		} catch(DAOException e) {
-			log.debug("This is a DEBUG-message in EditOrder", e);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
-			dispatcher.forward(request, response);
-		}
+		} else
+		request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
 
 }

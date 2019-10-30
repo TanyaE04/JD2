@@ -6,6 +6,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,45 +26,45 @@ public class AddCar implements Command {
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String brand;
-		String model;
-		int year;
-		String gearbox;
-		String color;
-		Double price;
-		int idClass;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			String brand;
+			String model;
+			int year;
+			String gearbox;
+			String color;
+			Double price;
+			int idClass;
 
-		brand = request.getParameter(RequestParameterName.BRAND);
-		model = request.getParameter(RequestParameterName.MODEL);
-		year = Integer.parseInt (request.getParameter(RequestParameterName.YEAR));
-		gearbox = request.getParameter(RequestParameterName.GEARBOX);
-		color = request.getParameter(RequestParameterName.COLOR);
-		price = Double.parseDouble(request.getParameter(RequestParameterName.PRICE));
-		idClass = Integer.parseInt(request.getParameter(RequestParameterName.CAR_ClASS));
+			brand = request.getParameter(RequestParameterName.BRAND);
+			model = request.getParameter(RequestParameterName.MODEL);
+			year = Integer.parseInt (request.getParameter(RequestParameterName.YEAR));
+			gearbox = request.getParameter(RequestParameterName.GEARBOX);
+			color = request.getParameter(RequestParameterName.COLOR);
+			price = Double.parseDouble(request.getParameter(RequestParameterName.PRICE));
+			idClass = Integer.parseInt(request.getParameter(RequestParameterName.CAR_ClASS));
 
-		CarService carService = ServiceProvider.getInstance().getCarService();
+			CarService carService = ServiceProvider.getInstance().getCarService();
 
-		Car car = new Car ();
-		car.setBrand(brand);
-		car.setModel(model);
-		car.setColor(color);
-		car.setGearbox(gearbox);
-		car.setIdClass(idClass);
-		car.setPrice(price);
-		car.setYear(year);
+			Car car = new Car ();
+			car.setBrand(brand);
+			car.setModel(model);
+			car.setColor(color);
+			car.setGearbox(gearbox);
+			car.setIdClass(idClass);
+			car.setPrice(price);
+			car.setYear(year);
 
-		try {
-
-			carService.addCar(car);
-			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, ADD_CAR);
-			response.sendRedirect("controller?command=showcar");
-
-		} catch (ServiceException e) {
-			log.debug("This is a DEBUG-message in RegistrationCommand");
-			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
-			dispatcher.forward(request, response);
-		}
+			try {
+				carService.addCar(car);
+				session.setAttribute(RequestParameterName.MESSAGE, ADD_CAR);
+				response.sendRedirect("controller?command=showcar");
+			} catch (ServiceException e) {
+				log.debug("This is a DEBUG-message in RegistrationCommand");
+				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+				dispatcher.forward(request, response);
+			}
+		} else
+			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
-
-
 }

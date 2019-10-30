@@ -6,6 +6,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,30 +25,33 @@ public class Damage implements Command{
 	private static final String REPAIR = "в ремонте";
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		int idCar;
-		int idOrder;
-		String description;
-		double sum;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			int idCar;
+			int idOrder;
+			String description;
+			double sum;
 		
-		idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
-		idOrder = Integer.parseInt(request.getParameter(RequestParameterName.ID_ORDER));
-		description = request.getParameter(RequestParameterName.DESCRIPTION);
-		sum = Double.parseDouble(request.getParameter(RequestParameterName.SUM));
+			idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
+			idOrder = Integer.parseInt(request.getParameter(RequestParameterName.ID_ORDER));
+			description = request.getParameter(RequestParameterName.DESCRIPTION);
+			sum = Double.parseDouble(request.getParameter(RequestParameterName.SUM));
 		
-		OrderDAO orderDAO = DAOProvider.INSTANCE.getOrderDAO();
-		CarDAO carDAO = DAOProvider.INSTANCE.getCarDAO();
-		try {
-			orderDAO.addDamage(idOrder, description, sum);
-			orderDAO.changeRefusal(idCar, 2);
-			carDAO.changeStatus(idCar, REPAIR);
-			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
-			response.sendRedirect("controller?command=showorder");
-		} catch(DAOException e) {
-			log.debug("This is a DEBUG-message in EditOrder");
-			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
-			dispatcher.forward(request, response);
-		}
-		
+			OrderDAO orderDAO = DAOProvider.INSTANCE.getOrderDAO();
+			CarDAO carDAO = DAOProvider.INSTANCE.getCarDAO();
+			try {
+				orderDAO.addDamage(idOrder, description, sum);
+				orderDAO.changeRefusal(idCar, 2);
+				carDAO.changeStatus(idCar, REPAIR);
+				session.setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
+				response.sendRedirect("controller?command=showorder");
+			} catch(DAOException e) {
+				log.debug("This is a DEBUG-message in EditOrder");
+				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+				dispatcher.forward(request, response);
+			}
+		} else
+			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
 
 }

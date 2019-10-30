@@ -10,6 +10,7 @@ import by.it.rent.command.impl.BlockUser;
 import by.it.rent.command.impl.NoSuchCommand;
 import by.it.rent.command.impl.OrderCar;
 import by.it.rent.command.impl.OrderData;
+import by.it.rent.command.impl.Pay;
 import by.it.rent.command.impl.ChooseCar;
 import by.it.rent.command.impl.CompleteOrder;
 import by.it.rent.command.impl.Damage;
@@ -61,6 +62,7 @@ public class CommandHelper {
 		commands.put(CommandName.DELETEORDER, new DeleteOrder ());
 		commands.put(CommandName.UPDATECAR, new UpdateCar ());
 		commands.put(CommandName.EDITCAR, new EditCar ());
+		commands.put(CommandName.PAY, new Pay ());
 	}
 
 	public static CommandHelper getInstance() {

@@ -7,7 +7,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,29 +27,27 @@ public class ShowCar implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
-		CarService carService=ServiceProvider.getInstance().getCarService();
-		
-		List <Car> list;
-		String goToPage;
-		User user;
-		
-		try {
-			list = carService.showAllCars();
-			request.setAttribute(RequestParameterName.CARS, list);
-			user = (User) request.getSession(false).getAttribute(RequestParameterName.USER);
-			if(user!=null && user.getIdRole()==1) {
-				goToPage=JSPPages.AD_CARS_PAGE;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			CarService carService=ServiceProvider.getInstance().getCarService();
+			List <Car> list;
+			String goToPage;
+			User user;
+			try {
+				list = carService.showAllCars();
+				request.setAttribute(RequestParameterName.CARS, list);
+				user = (User) session.getAttribute(RequestParameterName.USER);
+				if(user!=null && user.getIdRole()==1) {
+					goToPage=JSPPages.AD_CARS_PAGE;
+				} else {goToPage=JSPPages.USER_AUTH_PAGE;}
+			}catch(ServiceException e) {
+				log.debug("This is a DEBUG-message in ShowCar");
+				goToPage = JSPPages.ERROR_PAGE;
 			}
-			else {goToPage=JSPPages.USER_AUTH_PAGE;}
-		}catch(ServiceException e) {
-			log.debug("This is a DEBUG-message in ShowCar");
-			goToPage = JSPPages.ERROR_PAGE;
-		}
-		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
-		dispatcher.forward(request, response);
-		
-		
+			RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
+			dispatcher.forward(request, response);	
+		} else
+			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
 
 }

@@ -48,7 +48,6 @@ public class OrderData implements Command{
 			}
 		} else
 			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
-
 	}
 
 }

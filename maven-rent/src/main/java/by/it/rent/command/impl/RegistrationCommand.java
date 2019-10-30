@@ -56,7 +56,6 @@ public class RegistrationCommand implements Command {
 		User user;
 		String goToPage;
 		try {
-
 			user = userService.registration(newUser);
 			if (user != null) {
 				HttpSession session = request.getSession(true);
@@ -66,7 +65,6 @@ public class RegistrationCommand implements Command {
 				request.setAttribute(RequestParameterName.ERROR, LOGIN_EXISTS);
 				goToPage = JSPPages.REGISTRATION_PAGE;
 			}
-
 		} catch (ServiceException e) {
 			goToPage = JSPPages.ERROR_PAGE;
 			log.debug("This is a DEBUG-message in RegistrationCommand");

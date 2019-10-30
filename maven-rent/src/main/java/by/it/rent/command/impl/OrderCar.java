@@ -6,6 +6,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,59 +28,59 @@ public class OrderCar implements Command{
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		 
-		String dateRent;
-		String dateReturn;
-		String passport;
-		String driverLicense;
-		int idCar;
-		int idUser;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			String dateRent;
+			String dateReturn;
+			String passport;
+			String driverLicense;
+			int idCar;
+			int idUser;
 		
-		dateRent = request.getParameter(RequestParameterName.DATE_RENT);
-		dateReturn = request.getParameter(RequestParameterName.DATE_RETURN);
-		passport = request.getParameter(RequestParameterName.PASSPORT);
-		driverLicense = request.getParameter(RequestParameterName.DRIVER_LICENSE);
-		System.out.println(1111111);
-		System.out.println(request.getParameter(RequestParameterName.ID_CAR));
-		idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
-		idUser = Integer.parseInt(request.getParameter(RequestParameterName.ID_USER));
+			dateRent = request.getParameter(RequestParameterName.DATE_RENT);
+			dateReturn = request.getParameter(RequestParameterName.DATE_RETURN);
+			passport = request.getParameter(RequestParameterName.PASSPORT);
+			driverLicense = request.getParameter(RequestParameterName.DRIVER_LICENSE);
+			idCar=Integer.parseInt(request.getParameter(RequestParameterName.ID_CAR));
+			idUser = Integer.parseInt(request.getParameter(RequestParameterName.ID_USER));
 				
-		Order newOrder = new Order ();
-		newOrder.setDateRent(dateRent);
-		newOrder.setDateReturn(dateReturn);
-		newOrder.setIdCar(idCar);
-		newOrder.setIdUsers(idUser);
+			Order newOrder = new Order ();
+			newOrder.setDateRent(dateRent);
+			newOrder.setDateReturn(dateReturn);
+			newOrder.setIdCar(idCar);
+			newOrder.setIdUsers(idUser);
 		
-		Order order;
-		OrderService orderService = ServiceProvider.getInstance().getOrderService();
-		UserService userService = ServiceProvider.getInstance().getUserService();
-		CarService carService = ServiceProvider.getInstance().getCarService();
-		System.out.println(idCar);
-		try {
-			int idRefusal=1;		
-			order=orderService.orderCar(newOrder, idRefusal);
-			if (passport != null && driverLicense !=null) {
-				userService.addDetails(passport, driverLicense, idUser);
-			}
-			if (order==null) {
-				Car car = carService.findCarByID(newOrder.getIdCar());
-				request.setAttribute (RequestParameterName.CAR_INFO, car);
-				request.setAttribute(RequestParameterName.CAR_INFO, ALREADY_RENT);
-				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_PAGE);
-				dispatcher.forward(request, response);
-			} else {
-				System.out.println(333);
-				request.getSession(false).setAttribute(RequestParameterName.ORDER, order);
-				response.sendRedirect("controller?command=showcar");
-			}
+			Order order;
+			OrderService orderService = ServiceProvider.getInstance().getOrderService();
+			UserService userService = ServiceProvider.getInstance().getUserService();
+			CarService carService = ServiceProvider.getInstance().getCarService();
+
+			try {
+				int idRefusal=1;		
+				order=orderService.orderCar(newOrder, idRefusal);
+				if (passport != null && driverLicense !=null) {
+					userService.addDetails(passport, driverLicense, idUser);
+				}
+				if (order==null) {
+					Car car = carService.findCarByID(newOrder.getIdCar());
+					System.out.println(222222);
+					request.setAttribute (RequestParameterName.CAR_INFO, car);
+					System.out.println(car.getIdCar());
+					request.setAttribute(RequestParameterName.MESSAGE, ALREADY_RENT);
+					RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ORDER_PAGE);
+					dispatcher.forward(request, response);
+				} else {
+					session.setAttribute(RequestParameterName.ORDER, order);
+					response.sendRedirect("controller?command=showcar");
+				}
 			
-		} catch(ServiceException e) {
-			log.debug("This is a DEBUG-message in OrderCar");
-			RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
-			dispatcher.forward(request, response);
-		}
-		
-		
+			} catch(ServiceException e) {
+				log.debug("This is a DEBUG-message in OrderCar", e);
+				RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+				dispatcher.forward(request, response);
+			}
+		} else
+			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
 
 }

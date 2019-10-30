@@ -9,6 +9,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,69 +27,70 @@ public class FilterSearch implements Command {
 	private static final String NOT_FOUND = "message.not.found";
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-		String volkswagen = request.getParameter("volkswagen");
-		String audi = request.getParameter("audi");
-		String bmw = request.getParameter("bmw");
-		String skoda = request.getParameter("skoda");
-		String toyota = request.getParameter("toyota");
-		String gearbox = request.getParameter("gearbox");
-		String goToPage = JSPPages.USER_AUTH_PAGE;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			String volkswagen = request.getParameter("volkswagen");
+			String audi = request.getParameter("audi");
+			String bmw = request.getParameter("bmw");
+			String skoda = request.getParameter("skoda");
+			String toyota = request.getParameter("toyota");
+			String gearbox = request.getParameter("gearbox");
+			String goToPage = JSPPages.USER_AUTH_PAGE;
 		
-		CarService carService = ServiceProvider.getInstance().getCarService();
-		List <Car> list = new ArrayList <Car> ();
+			CarService carService = ServiceProvider.getInstance().getCarService();
+			List <Car> list = new ArrayList <Car> ();
 		
-		String [] pattern; 
-		String [] mark = {volkswagen, audi, bmw, skoda, toyota};
-		List <String> marks = new ArrayList<>();
-		for (String m:mark) {
-			if (m!= null) marks.add(m);
-		}
-		boolean isGearbox = false;
-		if (gearbox!=null) {
-			gearbox = builder (gearbox);
-			isGearbox = true;
-		}
-		if (marks.isEmpty()) {
-			if (isGearbox) {
-				pattern = new String [1];
-				pattern [0] = gearbox;
-				 try {
-					 List <Car> listOne = carService.findCar(pattern);
-					 list.addAll(listOne);
-				} catch (ServiceException e) {
-					log.debug("This is a DEBUG-message in FilterSearch");
-					goToPage = JSPPages.ERROR_PAGE;
-				}
+			String [] pattern; 
+			String [] mark = {volkswagen, audi, bmw, skoda, toyota};
+			List <String> marks = new ArrayList<>();
+			for (String m:mark) {
+				if (m!= null) marks.add(m);
 			}
-		} else {
-			for (String m:marks) {
-				m = builder (m);
+			boolean isGearbox = false;
+			if (gearbox!=null) {
+				gearbox = builder (gearbox);
+				isGearbox = true;
+			}
+			if (marks.isEmpty()) {
 				if (isGearbox) {
-					pattern = new String [2];
-					pattern [0] = m;
-					pattern [1] = gearbox;
-				} else {
 					pattern = new String [1];
-					pattern [0] = m;
+					pattern [0] = gearbox;
+					try {
+						List <Car> listOne = carService.findCar(pattern);
+						list.addAll(listOne);
+					} catch (ServiceException e) {
+						log.debug("This is a DEBUG-message in FilterSearch");
+						goToPage = JSPPages.ERROR_PAGE;
+					}
 				}
-				 try {
-					 List <Car> listOne = carService.findCar(pattern);
-					 list.addAll(listOne);
-				} catch (ServiceException e) {
-					log.debug("This is a DEBUG-message in FilterSearch");
-					goToPage = JSPPages.ERROR_PAGE;
+			} else {
+				for (String m:marks) {
+					m = builder (m);
+					if (isGearbox) {
+						pattern = new String [2];
+						pattern [0] = m;
+						pattern [1] = gearbox;
+					} else {
+						pattern = new String [1];
+						pattern [0] = m;
+					}
+					try {
+						List <Car> listOne = carService.findCar(pattern);
+						list.addAll(listOne);
+					} catch (ServiceException e) {
+						log.debug("This is a DEBUG-message in FilterSearch");
+						goToPage = JSPPages.ERROR_PAGE;
+					}
 				}
 			}
-		}
-		if (list.isEmpty()) {
-			request.getSession(false).setAttribute(RequestParameterName.MESSAGE, NOT_FOUND);
-		}
-		
-		request.setAttribute("cars", list);
-		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
-		dispatcher.forward(request, response);
-		
+			if (list.isEmpty()) {
+				session.setAttribute(RequestParameterName.MESSAGE, NOT_FOUND);
+			}
+				request.setAttribute("cars", list);
+				RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
+				dispatcher.forward(request, response);
+		} else
+			request.getRequestDispatcher(JSPPages.INDEX_PAGE).forward(request, response);
 	}
 	
 	private String builder (String param) {

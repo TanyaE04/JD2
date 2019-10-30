@@ -21,6 +21,7 @@ public class OrderValidator {
 			if (ofReturn.isBefore(rent)) {
 				return true;
 			} else
+				System.out.println(00000000);
 				return false;
 		} else {
 			return true;
