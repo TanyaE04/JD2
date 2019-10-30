@@ -76,6 +76,11 @@ public interface UserDAO {
      * @throws DAOException
      */
     void changeStatus(int idUser, String status) throws DAOException;
-    
+    /**
+     * 
+     * @param idUser	Unique identification number of user
+     * @param bill		Bill is a total sum of order (includes sum of damage)
+     * @throws DAOException
+     */
     void changeDebt (int idUser, double bill) throws DAOException;
 }
