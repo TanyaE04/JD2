@@ -29,6 +29,7 @@ public class Pay implements Command {
 			UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
 			try {
 				userDAO.changeDebt(idUser, 0);
+				session.setAttribute(RequestParameterName.USER, userDAO.showUserById(idUser));
 				session.setAttribute(RequestParameterName.MESSAGE, EDIT_MESSAGE);
 				response.sendRedirect("controller?command=orderdata");
 			} catch (DAOException e) {

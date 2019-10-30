@@ -73,7 +73,12 @@
 </c:if>
 
 	<div class="maincolumn">
-	
+<div class="message">
+ 	<c:if test="${not empty sessionScope.message}">
+		<fmt:message bundle="${loc}" key="${message}" /> <br>
+ 	</c:if>
+ <c:remove var = "message"/>
+</div>
 	<table style="background: rgba(135, 206, 235, 0.5)">
         <tr>
         	<th>Номер заказа</th>
@@ -117,7 +122,7 @@
     </table>
     <table></table>
     <c:if test="${sessionScope.user.debt > 0}">
-        <span style="color:red; bold">Итого сумма задолженности: <c:out value="${sessionScope.user.debt}"></c:out></span>
+        <span style="color:red;">Итого сумма задолженности: <c:out value="${sessionScope.user.debt}"></c:out></span>
         		<form action="controller" method="post">
 					<input type="hidden" name="command" value="pay" />
 					<input type="hidden" name="iduser" value="${user.idUser}" />

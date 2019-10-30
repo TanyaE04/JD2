@@ -13,9 +13,13 @@ import org.apache.logging.log4j.Logger;
 
 import by.it.rent.bean.Car;
 import by.it.rent.bean.Order;
+import by.it.rent.bean.User;
 import by.it.rent.command.Command;
 import by.it.rent.controller.JSPPages;
 import by.it.rent.controller.RequestParameterName;
+import by.it.rent.dao.DAOException;
+import by.it.rent.dao.DAOProvider;
+import by.it.rent.dao.UserDAO;
 import by.it.rent.service.CarService;
 import by.it.rent.service.OrderService;
 import by.it.rent.service.ServiceException;
@@ -52,14 +56,23 @@ public class OrderCar implements Command{
 		
 			Order order;
 			OrderService orderService = ServiceProvider.getInstance().getOrderService();
-			UserService userService = ServiceProvider.getInstance().getUserService();
 			CarService carService = ServiceProvider.getInstance().getCarService();
-
+			User user = new User();
 			try {
 				int idRefusal=1;		
 				order=orderService.orderCar(newOrder, idRefusal);
+				UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
 				if (passport != null && driverLicense !=null) {
-					userService.addDetails(passport, driverLicense, idUser);
+					try {
+						user = userDAO.showUserById(idUser);
+						user.setPassport(passport);
+						user.setDriverLicense(driverLicense);
+						userDAO.updateUser(user);
+					} catch (DAOException e) {
+						log.debug("This is a DEBUG-message in OrderCar", e);
+						RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPages.ERROR_PAGE);
+						dispatcher.forward(request, response);
+					}
 				}
 				if (order==null) {
 					Car car = carService.findCarByID(newOrder.getIdCar());

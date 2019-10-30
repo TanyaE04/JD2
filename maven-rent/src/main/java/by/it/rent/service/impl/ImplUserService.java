@@ -64,7 +64,6 @@ public class ImplUserService implements UserService {
 	@Override
 	public void addDetails(String passport, String driverLicense, int idUser) throws ServiceException {
 		UserDAO userDAO = DAOProvider.INSTANCE.getUserDAO();
-		
 		try {
 			userDAO.addDetails(passport, driverLicense, idUser);
 		} catch (DAOException e) {
