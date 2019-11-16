@@ -7,10 +7,7 @@ public class UserValidator {
 	}
 
 	public boolean check(String login, String password) {
-		if (login.isEmpty() || password.isEmpty()) {
-			return false;
-		} else
-			return true;
+		return (login.isEmpty() || password.isEmpty());
 	}
 
 	public static UserValidator getInstance() {
