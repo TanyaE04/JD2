@@ -36,7 +36,7 @@ public class CommandHelper {
 
 	private Map<CommandName, Command> commands = new HashMap<>();
 
-	public CommandHelper() {
+	private CommandHelper() {
 		commands.put(CommandName.AUTHORIZATION, new AuthorizationCommand());
 		commands.put(CommandName.NO_SUCH_COMMAND, new NoSuchCommand());
 		commands.put(CommandName.REGISTRATION, new RegistrationCommand());
