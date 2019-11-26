@@ -41,7 +41,8 @@ public class ImplUserService implements UserService {
 			if (userDAO.checkLogin(login)) {
 				user=null;
 			} else {
-			user = userDAO.registration(newUser);
+				int idUser = userDAO.registration(newUser);
+				user = userDAO.showUserById(idUser);
 			}
 		} catch (DAOException e) {
 			throw new ServiceException(e);

@@ -24,10 +24,10 @@ public interface UserDAO {
     /**
      * Contribute create new user in database
      * @param newUser	User object consists of data entered during registration
-     * @return			User object
+     * @return			Unique identification number of new user
      * @throws DAOException
      */
-    User registration (NewUser newUser) throws DAOException;
+    int registration (NewUser newUser) throws DAOException;
     /**
      * Contribute finding user by its id
      * @param idUser	Unique identification number of user

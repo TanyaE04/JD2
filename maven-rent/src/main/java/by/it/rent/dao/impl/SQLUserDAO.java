@@ -20,7 +20,7 @@ import by.it.rent.dao.UserDAO;
 public class SQLUserDAO implements UserDAO {
 	Logger log= LogManager.getLogger(SQLUserDAO.class.getName());
 	private static PoolConnection pc;
-	private static final String SELECT_USERS_BY_LOGIN = "SELECT * FROM users LEFT JOIN userstatus ON users.id_user=userstatus.id_user WHERE login=? AND password=?";
+	private static final String SELECT_USERS_BY_LOGIN = "SELECT * FROM users LEFT JOIN userstatus ON users.id_user=userstatus.id_user LEFT JOIN details ON users.id_user=details.id_user WHERE login=? AND password=?";
 	private static final String SELECT_USERS_BY_LOG = "SELECT * FROM users WHERE login=?";
 	private static final String SELECT_USERS_BY_ID = "SELECT * FROM users LEFT JOIN userstatus ON users.id_user=userstatus.id_user WHERE users.id_user=?";
 	private static final String SELECT_ALL_USERS = "SELECT * FROM users LEFT JOIN details ON users.id_user=details.id_user LEFT JOIN userstatus ON users.id_user=userstatus.id_user";
@@ -59,27 +59,14 @@ public class SQLUserDAO implements UserDAO {
 			prst.setString(2, pas);
 			rs = prst.executeQuery();
 			if (rs.next()) {
-				int idUser = rs.getInt(1);
 				user.setIdUser(rs.getInt(1));
 				user.setIdRole(rs.getInt(2));
 				user.setSurname(rs.getString(3));
 				user.setName(rs.getString(4));
 				user.setDebt(rs.getDouble(10));
 				user.setStatus(rs.getString(12));
-				if (prst != null) {
-					try {
-						prst.close();
-					} catch (SQLException e) {
-						throw new DAOException (e);
-					}
-				}
-				prst = connection.prepareStatement(SELECT_DETAILS_BY_IDUSER);
-				prst.setInt(1, idUser);
-				rs = prst.executeQuery();
-				if (rs.next()) {
-					user.setDriverLicense(rs.getString("driver_license"));
-					user.setPassport(rs.getString("passport"));
-				}
+				user.setDriverLicense(rs.getString(13));
+				user.setPassport(rs.getString(14));
 			} else
 				user = null;
 		} catch (SQLException e) {
@@ -100,11 +87,11 @@ public class SQLUserDAO implements UserDAO {
 	}
 
 	@Override
-	public User registration(NewUser newUser) throws DAOException {
+	public int registration(NewUser newUser) throws DAOException {
 		Connection connection = null;
 		PreparedStatement prst = null;
 		ResultSet rs = null;
-		User user = new User();
+		int idUser;
 		try {
 			connection = pc.take();
 			prst = connection.prepareStatement(INSERT_USERS);
@@ -128,16 +115,12 @@ public class SQLUserDAO implements UserDAO {
 					throw new DAOException (e);
 				}
 			}
-			prst = connection.prepareStatement(SELECT_USERS_BY_LOG);
-			prst.setString(1, login);
-			rs = prst.executeQuery();
-			rs.next();
-			user.setIdUser(rs.getInt(1));
-			user.setIdRole(2);
-			user.setSurname(newUser.getSurname());
-			user.setName(newUser.getName());
-			addDetails(null, null, rs.getInt(1));
-			addUserStatus (rs.getInt(1), null);
+			prst = connection.prepareStatement("SELECT LAST_INSERT_ID()");
+            rs = prst.executeQuery();
+            rs.next();
+            idUser = rs.getInt(1);
+			addDetails(null, null, idUser);
+			addUserStatus (idUser, null);
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -157,7 +140,7 @@ public class SQLUserDAO implements UserDAO {
 			}
 			pc.release(connection);
 		}
-		return user;
+		return idUser;
 	}
 
 	private static String hashing(String password) {

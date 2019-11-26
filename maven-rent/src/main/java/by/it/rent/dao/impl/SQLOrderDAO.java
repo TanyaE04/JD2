@@ -1,4 +1,4 @@
-package by.it.rent.dao.impl;
+ package by.it.rent.dao.impl;
 
 import by.it.rent.dao.DAOException;
 import by.it.rent.dao.OrderDAO;
